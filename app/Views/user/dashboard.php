@@ -90,6 +90,7 @@ ob_start();
         ?>
     </aside>
 </div>
+<script src="<?= defined('BASE_URL') ? rtrim(BASE_URL, '/') . '/' : '' ?>assets/js/search.js"></script>
 <?php
 $content = ob_get_clean();
 $showSidebar = false;
