@@ -31,3 +31,42 @@
     padding: var(--space-1) var(--space-2);
     font-size: var(--text-sm);
 }
+
+.product-form-page .product-form {
+    max-width: 28rem;
+}
+
+.form-select-with-action {
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+}
+
+.form-select-with-action .form-control {
+    flex: 1;
+    min-width: 0;
+}
+
+.form-actions {
+    display: flex;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+}
+
+.form-hint {
+    margin-top: var(--space-1);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+}
+
+.image-preview {
+    margin-top: var(--space-2);
+}
+
+.image-preview img {
+    display: block;
+}
+
+.required {
+    color: var(--color-danger);
+}
