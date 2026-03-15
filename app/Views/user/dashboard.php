@@ -15,6 +15,16 @@ $data = [
     ],
     'cart' => [],
     'grandTotal' => 0,
+    'latestOrder' => [
+        'id' => 1,
+        'created_at' => '2026-03-15 10:30',
+        'status' => 'Processing',
+        'total_amount' => 40.00,
+        'items' => [
+            ['name' => 'Coffee', 'quantity' => 2],
+            ['name' => 'Sandwich', 'quantity' => 1],
+        ],
+    ],
 ];
 if (isset($products) && is_array($products)) {
     $data['products'] = $products;
@@ -27,6 +37,9 @@ if (isset($cart)) {
 }
 if (isset($grandTotal)) {
     $data['grandTotal'] = $grandTotal;
+}
+if (isset($latestOrder)) {
+    $data['latestOrder'] = $latestOrder;
 }
 $products = $data['products'];
 $rooms = $data['rooms'];
@@ -83,6 +96,10 @@ ob_start();
         </section>
     </div>
     <aside class="dashboard-sidebar">
+        <?php
+        $latestOrder = $data['latestOrder'] ?? null;
+        require __DIR__ . '/../partials/latest_order.php';
+        ?>
         <?php
         $cart = $data['cart'];
         $grandTotal = $data['grandTotal'];
