@@ -6,6 +6,11 @@
     margin-bottom: var(--space-6);
 }
 
+.manual-order-user-section {
+    margin-bottom: var(--space-6);
+    max-width: 24rem;
+}
+
 .dashboard-grid {
     display: grid;
     gap: var(--space-6);
