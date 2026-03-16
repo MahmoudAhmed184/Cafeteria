@@ -75,6 +75,32 @@ ob_start();
     </aside>
 </div>
 <script src="<?= defined('BASE_URL') ? rtrim(BASE_URL, '/') . '/' : '' ?>assets/js/search.js"></script>
+<script>
+(function () {
+    'use strict';
+    var userInput = document.getElementById('manual-order-user');
+    var userIdInput = document.getElementById('manual-order-user-id');
+    if (!userInput || !userIdInput) return;
+
+    var usersMap = <?= json_encode(
+        array_map(function ($u) {
+            return ['label' => $u['name'] . ' (' . $u['email'] . ')', 'id' => $u['id']];
+        }, $users),
+        JSON_HEX_TAG | JSON_HEX_AMP
+    ) ?>;
+
+    var lookup = {};
+    usersMap.forEach(function (u) { lookup[u.label] = u.id; });
+
+    function syncUserId() {
+        var val = userInput.value.trim();
+        userIdInput.value = lookup[val] !== undefined ? lookup[val] : '';
+    }
+
+    userInput.addEventListener('input', syncUserId);
+    userInput.addEventListener('change', syncUserId);
+})();
+</script>
 <?php
 $content = ob_get_clean();
 $showSidebar = true;
