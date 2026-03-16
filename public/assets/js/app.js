@@ -82,4 +82,89 @@
             }
         }, 4000);
     };
+
+    /**
+     * Basic client-side form validation helpers (task 9.2)
+     */
+    function validateForm(form) {
+        if (!form) return true;
+        var firstInvalid = null;
+        var elements = Array.prototype.slice.call(form.elements || []);
+        elements.forEach(function (el) {
+            if (el.willValidate) {
+                el.setCustomValidity('');
+            }
+        });
+
+        // Custom rules per-form
+        if (form.classList.contains('auth-form')) {
+            var email = form.querySelector('#email');
+            var password = form.querySelector('#password');
+            if (email && email.value.trim() === '') {
+                email.setCustomValidity('Email is required.');
+            }
+            if (password && password.value.trim() === '') {
+                password.setCustomValidity('Password is required.');
+            }
+        }
+
+        if (form.id === 'confirm-order-form') {
+            var room = form.querySelector('#room_no');
+            if (room && room.value.trim() === '') {
+                room.setCustomValidity('Please select a room.');
+            }
+            var userIdInput = document.getElementById('manual-order-user-id');
+            if (userIdInput && userIdInput.form === form && !userIdInput.value) {
+                userIdInput.setCustomValidity('Please choose a user for this manual order.');
+            }
+        }
+
+        if (form.id === 'product-form') {
+            var name = form.querySelector('#name');
+            var price = form.querySelector('#price');
+            var category = form.querySelector('#category_id');
+            if (name && name.value.trim() === '') {
+                name.setCustomValidity('Product name is required.');
+            }
+            if (price) {
+                var value = parseFloat(price.value);
+                if (isNaN(value) || value <= 0) {
+                    price.setCustomValidity('Price must be greater than 0.');
+                }
+            }
+            if (category && !category.value) {
+                category.setCustomValidity('Please select a category.');
+            }
+        }
+
+        // reportValidity() triggers native UI tooltips even with novalidate
+        if (!form.reportValidity()) {
+            elements.forEach(function (el) {
+                if (el.willValidate && !el.validity.valid && !firstInvalid) {
+                    firstInvalid = el;
+                }
+            });
+            if (firstInvalid && typeof firstInvalid.focus === 'function') {
+                firstInvalid.focus();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    function attachValidation(formSelector) {
+        var form = document.querySelector(formSelector);
+        if (!form) return;
+        form.addEventListener('submit', function (e) {
+            if (!validateForm(form)) {
+                e.preventDefault();
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        attachValidation('.auth-form');
+        attachValidation('#confirm-order-form');
+        attachValidation('#product-form');
+    });
 })();

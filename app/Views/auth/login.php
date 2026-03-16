@@ -1,19 +1,10 @@
 <?php
 /**
  * Login view - FR-AUTH-001, FR-AUTH-005
- * Mock $data for view-first development; replace with controller data at integration.
+ * Expects $errors and $old from controller; falls back to empty arrays.
  */
-$data = [
-    'errors' => [],
-    'old' => ['email' => ''],
-];
-if (isset($data) && is_array($data)) {
-    $errors = $data['errors'] ?? [];
-    $old = $data['old'] ?? [];
-} else {
-    $errors = [];
-    $old = [];
-}
+$errors = $errors ?? [];
+$old = $old ?? [];
 $e = function ($s) {
     return htmlspecialchars((string) $s, ENT_QUOTES, 'UTF-8');
 };

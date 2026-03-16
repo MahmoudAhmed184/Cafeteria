@@ -64,7 +64,34 @@
             e.preventDefault();
             var name = newCategoryName ? newCategoryName.value.trim() : '';
             if (!name) return;
-            closeAddCategoryModal();
+
+            var baseUrl = (document.querySelector('meta[name="csrf-token"]') || {})
+                .closest ? '' : '';
+            var url = (typeof BASE_URL !== 'undefined' ? BASE_URL : '') + '/admin/categories/store';
+
+            window.ajax(url, {
+                method: 'POST',
+                body: { name: name }
+            }).then(function (data) {
+                var categorySelect = document.getElementById('category_id');
+                if (categorySelect && data && data.id) {
+                    var opt = document.createElement('option');
+                    opt.value = data.id;
+                    opt.textContent = data.name || name;
+                    opt.selected = true;
+                    categorySelect.appendChild(opt);
+                }
+                closeAddCategoryModal();
+                if (typeof window.showToast === 'function') {
+                    window.showToast('success', 'Category "' + name + '" added.');
+                }
+            }).catch(function (err) {
+                closeAddCategoryModal();
+                var msg = (err && err.data && err.data.message) ? err.data.message : 'Failed to add category.';
+                if (typeof window.showToast === 'function') {
+                    window.showToast('error', msg);
+                }
+            });
         });
     }
 })();
