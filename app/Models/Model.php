@@ -5,7 +5,7 @@ require_once "../Database/Database.php";
 abstract class Model {
     protected $table = null;
     protected $columns = null;
-
+  
     private function __construct() {
         $this->table = $this->getTableName();
         $this->columns = self::getColumns();
