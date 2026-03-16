@@ -1,45 +1,13 @@
 <?php
 /**
  * Manual order view - FR-ADM-MAN-001, 002, 003. Place order on behalf of a user.
- * Mock $data for view-first development.
+ * Expects data from controller; uses safe defaults when not provided.
  */
-$data = [
-    'users' => [
-        ['id' => 1, 'name' => 'Alice', 'email' => 'alice@example.com', 'room_no' => '101', 'ext' => '1001'],
-        ['id' => 2, 'name' => 'Bob', 'email' => 'bob@example.com', 'room_no' => '102', 'ext' => '1002'],
-    ],
-    'products' => [
-        ['id' => 1, 'name' => 'Coffee', 'price' => 15.00, 'image' => 'assets/images/placeholder.png', 'is_available' => 1],
-        ['id' => 2, 'name' => 'Sandwich', 'price' => 25.00, 'image' => 'assets/images/placeholder.png', 'is_available' => 1],
-        ['id' => 3, 'name' => 'Juice', 'price' => 10.00, 'image' => 'assets/images/placeholder.png', 'is_available' => 1],
-    ],
-    'rooms' => [
-        ['id' => 1, 'room_number' => '101'],
-        ['id' => 2, 'room_number' => '102'],
-    ],
-    'cart' => [],
-    'grandTotal' => 0,
-];
-if (isset($users) && is_array($users)) {
-    $data['users'] = $users;
-}
-if (isset($products) && is_array($products)) {
-    $data['products'] = $products;
-}
-if (isset($rooms) && is_array($rooms)) {
-    $data['rooms'] = $rooms;
-}
-if (isset($cart)) {
-    $data['cart'] = $cart;
-}
-if (isset($grandTotal)) {
-    $data['grandTotal'] = $grandTotal;
-}
-$users = $data['users'];
-$products = $data['products'];
-$rooms = $data['rooms'];
-$cart = $data['cart'];
-$grandTotal = $data['grandTotal'];
+$users = isset($users) && is_array($users) ? $users : [];
+$products = isset($products) && is_array($products) ? $products : [];
+$rooms = isset($rooms) && is_array($rooms) ? $rooms : [];
+$cart = isset($cart) && is_array($cart) ? $cart : [];
+$grandTotal = $grandTotal ?? 0;
 $currentUser = $currentUser ?? ['name' => 'Admin'];
 $e = function ($s) {
     return htmlspecialchars((string) $s, ENT_QUOTES, 'UTF-8');
@@ -102,8 +70,6 @@ ob_start();
     </div>
     <aside class="dashboard-sidebar">
         <?php
-        $cart = $data['cart'];
-        $grandTotal = $data['grandTotal'];
         require __DIR__ . '/../partials/cart_widget.php';
         ?>
     </aside>

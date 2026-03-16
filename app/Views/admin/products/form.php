@@ -2,21 +2,8 @@
 /**
  * Add/Edit product form - FR-ADM-PRD-003, 004, 005, 007. Mock data for view-first development.
  */
-$data = [
-    'categories' => [
-        ['id' => 1, 'name' => 'Beverages'],
-        ['id' => 2, 'name' => 'Sandwiches'],
-    ],
-    'product' => null,
-];
-if (isset($categories) && is_array($categories)) {
-    $data['categories'] = $categories;
-}
-if (isset($product)) {
-    $data['product'] = $product;
-}
-$categories = $data['categories'];
-$product = $data['product'];
+$categories = isset($categories) && is_array($categories) ? $categories : [];
+$product = $product ?? null;
 $isEdit = !empty($product);
 $e = function ($s) {
     return htmlspecialchars((string) $s, ENT_QUOTES, 'UTF-8');

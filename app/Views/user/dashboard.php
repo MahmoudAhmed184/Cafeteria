@@ -1,50 +1,13 @@
 <?php
 /**
  * User dashboard view - FR-CART-001, FR-CART-002, FR-CART-007, FR-CART-008, FR-CART-009
- * Mock $data for view-first development; replace with controller data at integration.
+ * Expects data from controller; uses safe defaults when not provided.
  */
-$data = [
-    'products' => [
-        ['id' => 1, 'name' => 'Coffee', 'price' => 15.00, 'image' => 'assets/images/placeholder.png', 'is_available' => 1],
-        ['id' => 2, 'name' => 'Sandwich', 'price' => 25.00, 'image' => 'assets/images/placeholder.png', 'is_available' => 1],
-        ['id' => 3, 'name' => 'Juice', 'price' => 10.00, 'image' => 'assets/images/placeholder.png', 'is_available' => 1],
-    ],
-    'rooms' => [
-        ['id' => 1, 'room_number' => '101'],
-        ['id' => 2, 'room_number' => '102'],
-    ],
-    'cart' => [],
-    'grandTotal' => 0,
-    'latestOrder' => [
-        'id' => 1,
-        'created_at' => '2026-03-15 10:30',
-        'status' => 'Processing',
-        'total_amount' => 40.00,
-        'items' => [
-            ['name' => 'Coffee', 'quantity' => 2],
-            ['name' => 'Sandwich', 'quantity' => 1],
-        ],
-    ],
-];
-if (isset($products) && is_array($products)) {
-    $data['products'] = $products;
-}
-if (isset($rooms) && is_array($rooms)) {
-    $data['rooms'] = $rooms;
-}
-if (isset($cart)) {
-    $data['cart'] = $cart;
-}
-if (isset($grandTotal)) {
-    $data['grandTotal'] = $grandTotal;
-}
-if (isset($latestOrder)) {
-    $data['latestOrder'] = $latestOrder;
-}
-$products = $data['products'];
-$rooms = $data['rooms'];
-$cart = $data['cart'];
-$grandTotal = $data['grandTotal'];
+$products = isset($products) && is_array($products) ? $products : [];
+$rooms = isset($rooms) && is_array($rooms) ? $rooms : [];
+$cart = isset($cart) && is_array($cart) ? $cart : [];
+$grandTotal = $grandTotal ?? 0;
+$latestOrder = $latestOrder ?? null;
 $currentUser = $currentUser ?? ['name' => 'User'];
 $e = function ($s) {
     return htmlspecialchars((string) $s, ENT_QUOTES, 'UTF-8');
@@ -97,12 +60,9 @@ ob_start();
     </div>
     <aside class="dashboard-sidebar">
         <?php
-        $latestOrder = $data['latestOrder'] ?? null;
         require __DIR__ . '/../partials/latest_order.php';
         ?>
         <?php
-        $cart = $data['cart'];
-        $grandTotal = $data['grandTotal'];
         require __DIR__ . '/../partials/cart_widget.php';
         ?>
     </aside>
