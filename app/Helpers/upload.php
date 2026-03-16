@@ -9,7 +9,6 @@ function uploadImage($file, $folder = 'uploads')
     if ($file['size'] > $maxSize) {
         throw new Exception("File is too large");
     }
-
     $allowedTypes = [
         'image/jpeg',
         'image/png',

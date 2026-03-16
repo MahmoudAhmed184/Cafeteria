@@ -4,8 +4,8 @@ require_once __DIR__ . '/../../config/database.php';
 
 class Product
 {
-    private $pdo;
 
+    private $pdo;
     public function __construct()
     {
         $this->pdo = Database::connect();
