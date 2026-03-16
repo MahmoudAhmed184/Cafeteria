@@ -3,15 +3,19 @@
 require_once "../Database/Database.php";
 
 abstract class Model {
-    protected $table;
-    protected $columns;
-
+    protected $table = null;
+    protected $columns = null;
+  
     private function __construct() {
         $this->table = $this->getTableName();
         $this->columns = self::getColumns();
     }
 
     public static function getColumns() {
+        if (! is_null($this->columns)) {
+            return $this->columns;
+        }
+
         $instance = new static();
         $tableName = $instance->getTableName();
         $connection = $instance->getConnection();
@@ -40,6 +44,15 @@ abstract class Model {
         $tableName = $instance->getTableName();
         $connection = $instance->getConnection();
         $result = $connection->query("SELECT * FROM $tableName WHERE id = $id");
+        return $result->fetch_assoc();
+    }
+
+    public function where($column, $value) {
+        $tableName = $this->getTableName();
+        $connection = $this->getConnection();
+
+        $result = $connection->query("SELECT * FROM $tableName WHERE $column = '" . $connection->real_escape_string($value) . "'");
+        
         return $result->fetch_assoc();
     }
 
@@ -90,6 +103,10 @@ abstract class Model {
     }
 
     private function getTableName() {
+        if (! is_null($this->table)) {
+            return $this->table;
+        }
+        
         $className = get_class($this);
         $tableName = strtolower($className) . 's';
         return $tableName;
