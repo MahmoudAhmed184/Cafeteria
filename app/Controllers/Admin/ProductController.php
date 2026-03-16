@@ -54,6 +54,22 @@ public function update()
         echo $e->getMessage();
     }
 }
+public function delete()
+{
+    try {
+
+        $id = $_GET['id'];
+
+        $this->productService->deleteProduct($id);
+
+        header("Location: /admin/products");
+        exit;
+
+    } catch (Exception $e) {
+
+        echo $e->getMessage();
+    }
+}
     public function store()
     {
         try {

@@ -17,37 +17,38 @@
 
         <?php foreach ($products as $product): ?>
 
-        <tr>
+            <tr>
 
-            <td>
-                <img src="/<?= $product['image'] ?>" width="50">
-            </td>
+                <td>
+                    <img src="/<?= $product['image'] ?>" width="50">
+                </td>
 
-            <td>
-                <?= htmlspecialchars($product['name']) ?>
-            </td>
+                <td>
+                    <?= htmlspecialchars($product['name']) ?>
+                </td>
 
-            <td>
-                <?= $product['price'] ?> EGP
-            </td>
+                <td>
+                    <?= $product['price'] ?> EGP
+                </td>
 
-            <td>
-                <?= $product['is_available'] ? "Available" : "Unavailable" ?>
-            </td>
+                <td>
+                    <?= $product['is_available'] ? "Available" : "Unavailable" ?>
+                </td>
 
-            <td>
+                <td>
 
-                <a href="/admin/products/edit?id=<?= $product['id'] ?>">
-                    Edit
-                </a>
+                    <a href="/admin/products/edit?id=<?= $product['id'] ?>">
+                        Edit
+                    </a>
+                    <a href="/admin/products/delete?id=<?= $product['id'] ?>"
+                        onclick="return confirm('Are you sure you want to delete this product?')">
+                        Delete
+                    </a>
 
-                <a href="/admin/products/delete?id=<?= $product['id'] ?>">
-                    Delete
-                </a>
 
-            </td>
+                </td>
 
-        </tr>
+            </tr>
 
         <?php endforeach; ?>
 
