@@ -32,7 +32,55 @@ class ProductService
 
         return $this->productModel->create($productData);
     }
+    public function updateProduct($id, $data, $file = null)
+    {
+        $this->validate($data);
 
+        $product = $this->productModel->findById($id);
+
+        if (!$product) {
+            throw new Exception("Product not found");
+        }
+
+        $imagePath = $product['image'];
+
+        if ($file && $file['error'] === 0) {
+            $imagePath = uploadImage($file, 'products');
+        }
+
+        $updateData = [
+            'name' => $data['name'],
+            'price' => $data['price'],
+            'category_id' => $data['category_id'],
+            'image' => $imagePath
+        ];
+
+        return $this->productModel->update($id, $updateData);
+    }
+
+    public function deleteProduct($id)
+    {
+        $product = $this->productModel->findById($id);
+
+        if (!$product) {
+            throw new Exception("Product not found");
+        }
+
+        return $this->productModel->delete($id);
+    }
+
+    public function toggleAvailability($id)
+    {
+        $product = $this->productModel->findById($id);
+
+        if (!$product) {
+            throw new Exception("Product not found");
+        }
+
+        $newStatus = $product['is_available'] ? 0 : 1;
+
+        return $this->productModel->updateAvailability($id, $newStatus);
+    }
     private function validate($data)
     {
         if (empty($data['name'])) {
