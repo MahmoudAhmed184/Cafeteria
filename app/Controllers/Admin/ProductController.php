@@ -10,7 +10,13 @@ class ProductController
     {
         $this->productService = new ProductService();
     }
+    public function create()
+    {
+        $categoryModel = new Category();
+        $categories = $categoryModel->getAll();
 
+        require __DIR__ . '/../../Views/admin/products/create.php';
+    }
     public function index()
     {
         $products = $this->productService->getAllProducts();
