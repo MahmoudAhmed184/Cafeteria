@@ -34,7 +34,26 @@ class ProductController
 
     require __DIR__ . '/../../Views/admin/products/edit.php';
 }
+public function update()
+{
+    try {
 
+        $id = $_GET['id'];
+
+        $this->productService->updateProduct(
+            $id,
+            $_POST,
+            $_FILES['image']
+        );
+
+        header("Location: /admin/products");
+        exit;
+
+    } catch (Exception $e) {
+
+        echo $e->getMessage();
+    }
+}
     public function store()
     {
         try {
