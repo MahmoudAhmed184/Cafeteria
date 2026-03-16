@@ -23,6 +23,17 @@ class ProductController
 
         require __DIR__ . '/../../Views/admin/products/index.php';
     }
+    public function edit()
+{
+    $id = $_GET['id'];
+
+    $product = $this->productService->getProductById($id);
+
+    $categoryModel = new Category();
+    $categories = $categoryModel->getAll();
+
+    require __DIR__ . '/../../Views/admin/products/edit.php';
+}
 
     public function store()
     {

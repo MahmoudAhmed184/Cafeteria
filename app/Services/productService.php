@@ -57,7 +57,10 @@ class ProductService
 
         return $this->productModel->update($id, $updateData);
     }
-
+public function getProductById($id)
+{
+    return $this->productModel->findById($id);
+}
     public function deleteProduct($id)
     {
         $product = $this->productModel->findById($id);
