@@ -2,17 +2,20 @@
 
 require_once "../Database/Database.php";
 
-abstract class Model {
+abstract class Model
+{
     protected $table = null;
     protected $columns = null;
-  
-    private function __construct() {
+
+    protected function __construct()
+    {
         $this->table = $this->getTableName();
         $this->columns = self::getColumns();
     }
 
-    public static function getColumns() {
-        if (! is_null($this->columns)) {
+    public static function getColumns()
+    {
+        if (!is_null($this->columns)) {
             return $this->columns;
         }
 
@@ -27,7 +30,8 @@ abstract class Model {
         return $columns;
     }
 
-    public static function all() {
+    public static function all()
+    {
         $instance = new static();
         $tableName = $instance->getTableName();
         $connection = $instance->getConnection();
@@ -39,7 +43,8 @@ abstract class Model {
         return $rows;
     }
 
-    public static function find($id) {
+    public static function find($id)
+    {
         $instance = new static();
         $tableName = $instance->getTableName();
         $connection = $instance->getConnection();
@@ -47,16 +52,18 @@ abstract class Model {
         return $result->fetch_assoc();
     }
 
-    public function where($column, $value) {
+    public function where($column, $value)
+    {
         $tableName = $this->getTableName();
         $connection = $this->getConnection();
 
         $result = $connection->query("SELECT * FROM $tableName WHERE $column = '" . $connection->real_escape_string($value) . "'");
-        
+
         return $result->fetch_assoc();
     }
 
-    public static function create($data) {
+    public static function create($data)
+    {
         $instance = new static();
         $tableName = $instance->getTableName();
         $connection = $instance->getConnection();
@@ -68,7 +75,7 @@ abstract class Model {
         }
         $columns = implode(", ", $valid_columns);
         // value may number, string, or null, so we need to handle them accordingly
-        $values = implode(", ", array_map(function($column) use ($data) {
+        $values = implode(", ", array_map(function ($column) use ($data) {
             if (is_null($data[$column])) {
                 return "NULL";
             } elseif (is_string($data[$column])) {
@@ -77,11 +84,12 @@ abstract class Model {
                 return $data[$column];
             }
         }, $valid_columns));
-        
+
         $connection->query("INSERT INTO $tableName ($columns) VALUES ($values)");
     }
 
-    public static function update($id, $data) {
+    public static function update($id, $data)
+    {
         $instance = new static();
         $tableName = $instance->getTableName();
         $connection = $instance->getConnection();
@@ -95,24 +103,27 @@ abstract class Model {
         $connection->query("UPDATE $tableName SET $set_clause WHERE id = $id");
     }
 
-    public static function delete($id) {
+    public static function delete($id)
+    {
         $instance = new static();
         $tableName = $instance->getTableName();
         $connection = $instance->getConnection();
         $connection->query("DELETE FROM $tableName WHERE id = $id");
     }
 
-    private function getTableName() {
-        if (! is_null($this->table)) {
+    protected function getTableName()
+    {
+        if (!is_null($this->table)) {
             return $this->table;
         }
-        
+
         $className = get_class($this);
         $tableName = strtolower($className) . 's';
         return $tableName;
     }
 
-    private function getConnection() {
-        return Database::connect();
+    protected function getConnection()
+    {
+        return Database::connect()->getConnectionInstance();
     }
 }
