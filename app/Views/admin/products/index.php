@@ -44,6 +44,11 @@
                         onclick="return confirm('Are you sure you want to delete this product?')">
                         Delete
                     </a>
+                    <a href="/admin/products/toggle?id=<?= $product['id'] ?>">
+
+                        <?= $product['is_available'] ? 'Disable' : 'Enable' ?>
+
+                    </a>
 
 
                 </td>

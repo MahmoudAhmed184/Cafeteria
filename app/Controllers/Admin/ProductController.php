@@ -70,6 +70,22 @@ public function delete()
         echo $e->getMessage();
     }
 }
+public function toggle()
+{
+    try {
+
+        $id = $_GET['id'];
+
+        $this->productService->toggleAvailability($id);
+
+        header("Location: /admin/products");
+        exit;
+
+    } catch (Exception $e) {
+
+        echo $e->getMessage();
+    }
+}
     public function store()
     {
         try {
