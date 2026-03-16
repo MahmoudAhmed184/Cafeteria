@@ -137,8 +137,8 @@
             }
         }
 
-        // Let the browser run HTML5 validation with our custom messages
-        if (!form.checkValidity()) {
+        // reportValidity() triggers native UI tooltips even with novalidate
+        if (!form.reportValidity()) {
             elements.forEach(function (el) {
                 if (el.willValidate && !el.validity.valid && !firstInvalid) {
                     firstInvalid = el;
