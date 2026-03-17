@@ -2,19 +2,20 @@
 
 class AdminMiddleware
 {
-
-    public static function handle()
+    public static function handle(): void
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
+        $base = defined('BASE_URL') ? rtrim((string) BASE_URL, '/') : '';
+
         if (!isset($_SESSION['user_id'])) {
-            redirect("/project/cafeteria/login");
+            redirect(($base !== '' ? $base : '') . '/login');
         }
 
         if ($_SESSION['role_id'] != 1) {
-            redirect("/project/cafeteria/dashboard");
+            redirect(($base !== '' ? $base : '') . '/dashboard');
         }
     }
 }

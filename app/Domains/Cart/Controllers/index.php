@@ -1,3 +1,0 @@
-<?php
-
-view("Cart/index");
