@@ -27,11 +27,11 @@ class ManualOrderService implements ManualOrderServiceInterface
                 FROM users
                 WHERE is_active = 1
                   AND role_id = 2
-                  AND (name LIKE :query OR email LIKE :query)
+                  AND (name LIKE ? OR email LIKE ?)
                 ORDER BY name ASC
                 LIMIT 20';
         $statement = $this->connection->prepare($sql);
-        $statement->execute(['query' => $query]);
+        $statement->execute([$query, $query]);
 
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
