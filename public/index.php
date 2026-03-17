@@ -6,6 +6,23 @@ if (!defined('APP_ROOT')) {
     define('APP_ROOT', dirname(__DIR__));
 }
 
+// Load environment variables from .env file
+$envFile = APP_ROOT . '/.env';
+if (file_exists($envFile)) {
+    $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (str_starts_with($line, '#') || !str_contains($line, '=')) {
+            continue;
+        }
+        [$key, $value] = explode('=', $line, 2);
+        $key = trim($key);
+        $value = trim($value, ' "\'');
+        if (!getenv($key)) {
+            putenv("$key=$value");
+        }
+    }
+}
+
 require_once APP_ROOT . '/config/app.php';
 require_once APP_ROOT . '/helpers/functions.php';
 require_once APP_ROOT . '/helpers/validation.php';
