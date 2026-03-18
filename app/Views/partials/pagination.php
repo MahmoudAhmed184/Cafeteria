@@ -10,6 +10,11 @@ if ($totalPages <= 1) {
 ?>
 <nav class="pagination" aria-label="Pagination">
     <?php for ($page = 1; $page <= $totalPages; $page++): ?>
-    <a class="pagination-link <?= $page === $currentPage ? 'is-active' : '' ?>" href="<?= htmlspecialchars($basePath . (str_contains($basePath, '?') ? '&' : '?') . 'page=' . $page, ENT_QUOTES, 'UTF-8') ?>"><?= $page ?></a>
+    <a
+        class="pagination-link <?= $page === $currentPage ? 'is-active' : '' ?>"
+        href="<?= htmlspecialchars($basePath . (str_contains($basePath, '?') ? '&' : '?') . 'page=' . $page, ENT_QUOTES, 'UTF-8') ?>"
+        aria-label="Go to page <?= $page ?>"
+        <?= $page === $currentPage ? 'aria-current="page"' : '' ?>
+    ><?= $page ?></a>
     <?php endfor; ?>
 </nav>

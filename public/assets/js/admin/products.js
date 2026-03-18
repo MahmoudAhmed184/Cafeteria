@@ -16,19 +16,34 @@
         imageInput.addEventListener('change', function () {
             var file = this.files[0];
             imagePreview.innerHTML = '';
-            if (file && file.type.indexOf('image/') === 0) {
-                var reader = new FileReader();
-                reader.onload = function () {
-                    var img = document.createElement('img');
-                    img.src = reader.result;
-                    img.alt = 'Preview';
-                    img.style.maxWidth = '120px';
-                    img.style.maxHeight = '120px';
-                    img.style.marginTop = '0.5rem';
-                    imagePreview.appendChild(img);
-                };
-                reader.readAsDataURL(file);
+            if (!file) {
+                return;
             }
+            if (file.type.indexOf('image/') !== 0) {
+                if (typeof window.showToast === 'function') {
+                    window.showToast('error', 'Please select a valid image file.');
+                }
+                this.value = '';
+                return;
+            }
+            // Optional client-side size hint (~2MB limit to match backend constraints if configured)
+            var maxBytes = 2 * 1024 * 1024;
+            if (file.size && file.size > maxBytes && typeof window.showToast === 'function') {
+                window.showToast('error', 'Image is too large. Please choose a file under 2 MB.');
+                this.value = '';
+                return;
+            }
+            var reader = new FileReader();
+            reader.onload = function () {
+                var img = document.createElement('img');
+                img.src = reader.result;
+                img.alt = 'Preview';
+                img.style.maxWidth = '120px';
+                img.style.maxHeight = '120px';
+                img.style.marginTop = '0.5rem';
+                imagePreview.appendChild(img);
+            };
+            reader.readAsDataURL(file);
         });
     }
 
