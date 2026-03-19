@@ -1,0 +1,90 @@
+#!/usr/bin/env php
+<?php
+
+if (!defined('APP_ROOT')) {
+    define('APP_ROOT', __DIR__);
+}
+
+// 1. Load environment variables from .env file FIRST
+$envFile = APP_ROOT . '/.env';
+if (file_exists($envFile)) {
+    $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (str_starts_with($line, '#') || !str_contains($line, '=')) {
+            continue;
+        }
+        [$key, $value] = explode('=', $line, 2);
+        $key = trim($key);
+        $value = trim($value, ' "\'');
+        if (!getenv($key)) {
+            putenv("$key=$value");
+        }
+    }
+}
+
+require_once __DIR__ . '/config/database.php';
+
+function runMigrations() {
+    echo "Starting migrations...\n";
+
+    try {
+        $db = database_connection();
+        
+        // Create a migrations table to track executed migrations
+        $db->exec("CREATE TABLE IF NOT EXISTS migrations (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            migration VARCHAR(255) NOT NULL,
+            executed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )");
+        
+        // Get already executed migrations
+        $stmt = $db->query("SELECT migration FROM migrations");
+        $executed = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        // Get all migration files and sort them to execute in order
+        $files = glob(__DIR__ . '/database/migrations/*.sql');
+        sort($files);
+        
+        $ranAny = false;
+        foreach ($files as $file) {
+            $basename = basename($file);
+            
+            if (!in_array($basename, $executed)) {
+                echo "Migrating: $basename... ";
+                
+                $sql = file_get_contents($file);
+                
+                // Execute the migration
+                $db->exec($sql);
+                
+                // Record the migration
+                $insert = $db->prepare("INSERT INTO migrations (migration) VALUES (?)");
+                $insert->execute([$basename]);
+                
+                echo "Done.\n";
+                $ranAny = true;
+            }
+        }
+        
+        if (!$ranAny) {
+            echo "Nothing to migrate. All migrations are up to date.\n";
+        }
+        
+    } catch (PDOException $e) {
+        die("Database Error while migrating: " . $e->getMessage() . "\n");
+    }
+}
+
+// Simple CLI command router
+$command = $argv[1] ?? null;
+
+switch ($command) {
+    case 'migrate':
+        runMigrations();
+        break;
+    default:
+        echo "Usage: php artisan [command]\n";
+        echo "Available commands:\n";
+        echo "  migrate     Run all pending database migrations\n";
+        break;
+}
