@@ -7,3 +7,4 @@ uploads/profiles/*
 logs/*
 !logs/error.log
 config/database.local.php
+.env
