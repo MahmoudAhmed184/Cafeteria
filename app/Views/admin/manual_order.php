@@ -75,6 +75,7 @@ ob_start();
     </aside>
 </div>
 <script src="<?= defined('BASE_URL') ? rtrim(BASE_URL, '/') . '/' : '' ?>assets/js/search.js"></script>
+<script src="<?= defined('BASE_URL') ? rtrim(BASE_URL, '/') . '/' : '' ?>assets/js/cart.js"></script>
 <script>
 (function () {
     'use strict';
