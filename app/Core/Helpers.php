@@ -19,6 +19,6 @@ function view(string $path, ?array $data = []) {
     $view = explode("/", $path)[1];    
     extract($data);
 
-    require_once base_path("app/Domains/$domain/Views/$view.php");
+    require_once base_path("app/Views/$domain/$view.php");
     return;
 }

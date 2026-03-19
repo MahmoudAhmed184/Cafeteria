@@ -47,18 +47,32 @@ class Router {
         $route = $this->findRoute($method, $url);
 
         if ($route) {
-            require_once $route["controller"];
+            $controllerFile = $route["controller"];
+
+            require_once ROOT . $controllerFile;
+            $controller = new $controllerFile;
+
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                $controller->{$route["action"]}($_POST);
+                return;
+            }else if ($_SERVER["REQUEST_METHOD"] == "PUT") {
+                $controller->{$route["action"]}($_POST);
+                return;
+            }
+                
+            $controller->{$route["action"]}($_GET);
         }
     }
 
     private function add($method, $url, $controller, $name=null) {
-        $domain = explode("/", $controller)[0];
-        $controller = explode("/", $controller)[1];    
+        $controller = explode("@", $controller)[0];
+        $action = explode("@", $controller)[1];
         
         $route = [
             "method" => $method,
             "url" => $url,
-            "controller" => ROOT . "app/Domains/$domain/Controllers/$controller.php",
+            "controller" => ROOT . "app/Controllers/$controller.php",
+            "action" => $action,
             "name" => $name
         ];
 

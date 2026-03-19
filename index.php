@@ -1,6 +1,7 @@
 <?php
 
-define("ROOT", "./");
+// get current directory
+define("ROOT", __DIR__ . "/");
 require_once ROOT . "app/Core/Helpers.php";
 require_once ROOT . "app/Core/Router.php";
 
