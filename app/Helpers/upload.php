@@ -1,3 +1,4 @@
+<?php
 function uploadImage($file, $folder = 'uploads')
 {
     if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
@@ -35,7 +36,8 @@ function uploadImage($file, $folder = 'uploads')
 
     $destination = $uploadPath . '/' . $filename;
 
-    move_uploaded_file($file['tmp_name'], $destination);
-
+    if (!move_uploaded_file($file['tmp_name'], $destination)) {
+    throw new Exception("Failed to move uploaded file");
+}
     return "uploads/$folder/$filename";
 }

@@ -14,13 +14,14 @@ class ErrorHandler
     public static function handleError($severity, $message, $file, $line)
     {
         self::log("Error: $message in $file on line $line");
+        throw new \ErrorException($message, 0, $severity, $file, $line);
     }
 
     public static function handleException($exception)
     {
         $message = $exception->getMessage();
-        $file = $exception->getFile();
-        $line = $exception->getLine();
+        $file    = $exception->getFile();
+        $line    = $exception->getLine();
 
         self::log("Exception: $message in $file on line $line");
 
@@ -35,7 +36,7 @@ class ErrorHandler
         $logMessage = "[$date] $message\n";
 
         file_put_contents(
-            __DIR__ . "/../../logs/error.log",
+            __DIR__ . "/../../storage/logs/error.log",
             $logMessage,
             FILE_APPEND
         );

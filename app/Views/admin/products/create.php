@@ -2,6 +2,8 @@
 
 <form action="/admin/products/store" method="POST" enctype="multipart/form-data">
 
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+
     <div>
         <label>Product Name</label>
         <input type="text" name="name" required>

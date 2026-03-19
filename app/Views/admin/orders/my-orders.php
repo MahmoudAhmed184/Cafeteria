@@ -13,33 +13,35 @@
 
 <tbody>
 
+<?php if (!empty($orders)): ?>
+
 <?php foreach ($orders as $order): ?>
 
 <tr>
 
 <td>
-<?= $order['created_at'] ?>
+<?= htmlspecialchars($order['created_at']) ?>
 </td>
 
 <td>
-<?= $order['status'] ?>
+<?= htmlspecialchars($order['status']) ?>
 </td>
 
 <td>
-<?= $order['total_amount'] ?> EGP
+<?= htmlspecialchars($order['total_amount']) ?> EGP
 </td>
 
 <td>
 
 <?php if ($order['status'] === 'Processing'): ?>
 
-<a href="/orders/cancel?id=<?= $order['id'] ?>">
+<a href="/orders/cancel?id=<?= (int)$order['id'] ?>">
 Cancel
 </a>
 
 <?php endif; ?>
 
-<a href="/orders/details?id=<?= $order['id'] ?>">
+<a href="/orders/details?id=<?= (int)$order['id'] ?>">
 View
 </a>
 
@@ -48,6 +50,14 @@ View
 </tr>
 
 <?php endforeach; ?>
+
+<?php else: ?>
+
+<tr>
+<td colspan="4">No orders found</td>
+</tr>
+
+<?php endif; ?>
 
 </tbody>
 

@@ -1,6 +1,8 @@
 <h1>Edit Product</h1>
 
-<form action="/admin/products/update?id=<?= $product['id'] ?>" method="POST" enctype="multipart/form-data">
+<form action="/admin/products/update?id=<?= (int)$product['id'] ?>" method="POST" enctype="multipart/form-data">
+
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
 
     <div>
         <label>Product Name</label>

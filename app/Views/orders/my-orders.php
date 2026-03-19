@@ -51,11 +51,7 @@ Cancel
 
 <!-- View Order Details -->
 
-<a 
-href="#"
-class="view-order"
-data-id="<?= $order['id'] ?>"
->
+<a href="/orders/details?id=<?= (int)$order['id'] ?>">
 View
 </a>
 
