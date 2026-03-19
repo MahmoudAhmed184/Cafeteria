@@ -1,0 +1,9 @@
+public/preview.php
+uploads/*
+!uploads/products/
+!uploads/profiles/
+uploads/products/*
+uploads/profiles/*
+logs/*
+!logs/error.log
+config/database.local.php

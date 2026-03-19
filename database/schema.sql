@@ -1,0 +1,56 @@
+CREATE TABLE users (
+    id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    room_no VARCHAR(20) NOT NULL,
+    ext VARCHAR(20) NOT NULL,
+    profile_pic VARCHAR(255) DEFAULT NULL,
+    role_id TINYINT UNSIGNED NOT NULL DEFAULT 2,
+    is_active TINYINT(1) NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE categories (
+    id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL UNIQUE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE products (
+    id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(150) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    image VARCHAR(255) NOT NULL,
+    category_id INT UNSIGNED NOT NULL,
+    is_available TINYINT(1) NOT NULL DEFAULT 1,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE rooms (
+    id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    room_number VARCHAR(20) NOT NULL UNIQUE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE orders (
+    id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT UNSIGNED NOT NULL,
+    room_no VARCHAR(20) NOT NULL,
+    notes TEXT DEFAULT NULL,
+    total_amount DECIMAL(10,2) NOT NULL,
+    status ENUM('Processing','Out for Delivery','Done','Cancelled') NOT NULL DEFAULT 'Processing',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    INDEX idx_orders_user_id (user_id),
+    INDEX idx_orders_status (status),
+    INDEX idx_orders_created_at (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE order_items (
+    id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    order_id BIGINT UNSIGNED NOT NULL,
+    product_id BIGINT UNSIGNED NOT NULL,
+    quantity INT UNSIGNED NOT NULL CHECK (quantity > 0),
+    price_at_time_of_order DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

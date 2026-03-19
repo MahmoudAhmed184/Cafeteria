@@ -33,5 +33,6 @@ $assetBase = defined('BASE_URL') ? rtrim(BASE_URL, '/') : '';
     </div>
     <?php require __DIR__ . '/../partials/footer.php'; ?>
     <?php require __DIR__ . '/../partials/toast.php'; ?>
+    <script src="<?= $assetBase ? $assetBase . '/' : '' ?>assets/js/app.js"></script>
 </body>
 </html>

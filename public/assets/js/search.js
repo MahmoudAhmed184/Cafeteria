@@ -5,7 +5,8 @@
 (function () {
     'use strict';
 
-    var searchInput = document.getElementById('product-search');
+    var searchInput = document.getElementById('product-search')
+        || document.getElementById('manual-product-search');
     var productsGrid = document.getElementById('products-grid');
     if (!searchInput || !productsGrid) return;
 
