@@ -1,19 +1,27 @@
 <?php
 
-require_once __DIR__ . '/../config/database.php';
+namespace App\Models;
+
+use PDO;
 
 class Category
 {
-    private $pdo;
+    private PDO $connection;
 
-    public function __construct()
+    public function __construct(PDO $connection)
     {
-        $this->pdo = Database::connect();
+        $this->connection = $connection;
     }
 
-    public function getAll()
+    public function fetchAll(): array
     {
-        $stmt = $this->pdo->query("SELECT * FROM categories");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $this->connection->query('SELECT * FROM categories ORDER BY name ASC')->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function create(string $name): int
+    {
+        $stmt = $this->connection->prepare('INSERT INTO categories (name) VALUES (:name)');
+        $stmt->execute(['name' => $name]);
+        return (int) $this->connection->lastInsertId();
     }
 }

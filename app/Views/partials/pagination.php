@@ -1,32 +1,20 @@
-<div class="pagination">
+<?php
 
-<?php if ($currentPage > 1): ?>
+$currentPage = max(1, (int) ($currentPage ?? 1));
+$totalPages = max(1, (int) ($totalPages ?? 1));
+$basePath = (string) ($basePath ?? '');
 
-<a href="?page=<?= $currentPage - 1 ?>">
-Previous
-</a>
-
-<?php endif; ?>
-
-
-<?php for ($i = 1; $i <= $totalPages; $i++): ?>
-
-<a href="?page=<?= $i ?>"
-   style="<?= $i == $currentPage ? 'font-weight:bold;' : '' ?>">
-
-<?= $i ?>
-
-</a>
-
-<?php endfor; ?>
-
-
-<?php if ($currentPage < $totalPages): ?>
-
-<a href="?page=<?= $currentPage + 1 ?>">
-Next
-</a>
-
-<?php endif; ?>
-
-</div>
+if ($totalPages <= 1) {
+    return;
+}
+?>
+<nav class="pagination" aria-label="Pagination">
+    <?php for ($page = 1; $page <= $totalPages; $page++): ?>
+    <a
+        class="pagination-link <?= $page === $currentPage ? 'is-active' : '' ?>"
+        href="<?= htmlspecialchars($basePath . (str_contains($basePath, '?') ? '&' : '?') . 'page=' . $page, ENT_QUOTES, 'UTF-8') ?>"
+        aria-label="Go to page <?= $page ?>"
+        <?= $page === $currentPage ? 'aria-current="page"' : '' ?>
+    ><?= $page ?></a>
+    <?php endfor; ?>
+</nav>

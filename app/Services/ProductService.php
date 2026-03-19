@@ -1,106 +1,93 @@
 <?php
 
-require_once __DIR__ . '/../Models/Product.php';
-require_once __DIR__ . '/../Helpers/upload.php';
+namespace App\Services;
 
-class ProductService
+use App\Models\Product;
+use App\Models\Category;
+use App\Services\Contracts\ProductServiceInterface;
+use Exception;
+
+class ProductService implements ProductServiceInterface
 {
-    private $productModel;
+    private Product $productModel;
+    private Category $categoryModel;
 
-    public function __construct()
+    public function __construct(Product $productModel, Category $categoryModel)
     {
-        $this->productModel = new Product();
+        $this->productModel = $productModel;
+        $this->categoryModel = $categoryModel;
     }
 
-    public function getAllProducts()
+    public function getAllProducts(bool $availableOnly = false): array
     {
-        return $this->productModel->getAll();
+        return $this->productModel->fetchAll($availableOnly);
     }
 
-    public function createProduct($data, $file)
+    public function getProductById(int $productId): ?array
     {
-        $this->validate($data);
-
-        // Server-side check: image is required on create
-        if (empty($file) || !isset($file['error']) || $file['error'] === UPLOAD_ERR_NO_FILE) {
-            throw new Exception('Product image is required.');
-        }
-
-        $imagePath = uploadImage($file, 'products');
-
-        $productData = [
-            'name' => $data['name'],
-            'price' => $data['price'],
-            'category_id' => $data['category_id'],
-            'image' => $imagePath
-        ];
-
-        return $this->productModel->create($productData);
-    }
-    public function updateProduct($id, $data, $file = null)
-    {
-        $this->validate($data);
-
-        $product = $this->productModel->findById($id);
-
-        if (!$product) {
-            throw new Exception("Product not found");
-        }
-
-        $imagePath = $product['image'];
-
-        if ($file && $file['error'] === 0) {
-            $imagePath = uploadImage($file, 'products');
-        }
-
-        $updateData = [
-            'name' => $data['name'],
-            'price' => $data['price'],
-            'category_id' => $data['category_id'],
-            'image' => $imagePath
-        ];
-
-        return $this->productModel->update($id, $updateData);
-    }
-    public function getProductById($id)
-    {
-        return $this->productModel->findById($id);
-    }
-    public function deleteProduct($id)
-    {
-        $product = $this->productModel->findById($id);
-
-        if (!$product) {
-            throw new Exception("Product not found");
-        }
-
-        return $this->productModel->delete($id);
+        $product = $this->productModel->findById($productId);
+        return $product ?: null;
     }
 
-    public function toggleAvailability($id)
+    public function createProduct(array $data, ?array $file = null): int
     {
-        $product = $this->productModel->findById($id);
-
-        if (!$product) {
-            throw new Exception("Product not found");
+        if ($file && $file['error'] === UPLOAD_ERR_OK) {
+            $data['image'] = $this->uploadImage($file);
+        } else {
+            throw new Exception("Image is required for new products.");
         }
-
-        $newStatus = $product['is_available'] ? 0 : 1;
-
-        return $this->productModel->updateAvailability($id, $newStatus);
+        
+        return $this->productModel->create($data);
     }
-    private function validate($data)
+
+    public function updateProduct(int $productId, array $data, ?array $file = null): bool
     {
-        if (empty($data['name'])) {
-            throw new Exception("Product name is required");
+        if ($file && $file['error'] === UPLOAD_ERR_OK) {
+            $data['image'] = $this->uploadImage($file);
+        }
+        
+        return $this->productModel->update($productId, $data);
+    }
+
+    public function deleteProduct(int $productId): bool
+    {
+        return $this->productModel->delete($productId);
+    }
+
+    public function toggleAvailability(int $productId): bool
+    {
+        return $this->productModel->toggleAvailability($productId);
+    }
+
+    public function getAllCategories(): array
+    {
+        return $this->categoryModel->fetchAll();
+    }
+
+    public function createCategory(string $name): int
+    {
+        return $this->categoryModel->create($name);
+    }
+
+    private function uploadImage(array $file): string
+    {
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
+
+        if (!in_array($mimeType, $allowedTypes, true)) {
+            throw new Exception("Invalid file type.");
         }
 
-        if (!is_numeric($data['price']) || $data['price'] <= 0) {
-            throw new Exception("Invalid price");
+        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $filename = uniqid('prod_', true) . '.' . $extension;
+        $destination = __DIR__ . '/../../uploads/products/' . $filename;
+
+        if (!move_uploaded_file($file['tmp_name'], $destination)) {
+            throw new Exception("Failed to move uploaded file.");
         }
 
-        if (empty($data['category_id'])) {
-            throw new Exception("Category is required");
-        }
+        return $filename;
     }
 }

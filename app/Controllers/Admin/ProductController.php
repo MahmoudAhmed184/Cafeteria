@@ -1,151 +1,99 @@
 <?php
 
-require_once __DIR__ . '/../../Services/ProductService.php';
-require_once __DIR__ . '/../../Models/Category.php';
+namespace App\Controllers\Admin;
+
+use App\Services\Contracts\ProductServiceInterface;
 
 class ProductController
 {
-    private $productService;
+    private ProductServiceInterface $productService;
 
-    public function __construct()
+    public function __construct(ProductServiceInterface $productService)
     {
-        $this->productService = new ProductService();
+        $this->productService = $productService;
     }
 
-    // ── CSRF helpers ─────────────────────────────────────────────────────────
-
-    private function generateCsrfToken(): string
-    {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-        if (empty($_SESSION['csrf_token'])) {
-            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-        }
-        return $_SESSION['csrf_token'];
-    }
-
-    private function validateCsrfToken(): void
-    {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-        $token = $_POST['csrf_token'] ?? '';
-        if (empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $token)) {
-            http_response_code(403);
-            throw new Exception('Invalid CSRF token. Please refresh the page and try again.');
-        }
-    }
-
-    // ── Input helpers ─────────────────────────────────────────────────────────
-
-    private function getValidId(): int
-    {
-        if (!isset($_GET['id']) || !is_numeric($_GET['id']) || (int)$_GET['id'] <= 0) {
-            http_response_code(400);
-            throw new Exception('Invalid or missing product ID.');
-        }
-        return (int)$_GET['id'];
-    }
-    public function index()
+    public function index(): void
     {
         $products = $this->productService->getAllProducts();
-
-        require __DIR__ . '/../../Views/admin/products/index.php';
+        require_once __DIR__ . '/../../Views/admin/products/index.php';
     }
-    public function edit()
+
+    public function create(): void
     {
+        $categories = $this->productService->getAllCategories();
+        require_once __DIR__ . '/../../Views/admin/products/form.php';
+    }
+
+    public function store(): void
+    {
+        $data = [
+            'name' => filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
+            'price' => filter_input(INPUT_POST, 'price', FILTER_VALIDATE_FLOAT),
+            'category_id' => filter_input(INPUT_POST, 'category_id', FILTER_VALIDATE_INT),
+        ];
+
         try {
-            $id = $this->getValidId();
-
-            $product = $this->productService->getProductById($id);
-
-            if (!$product) {
-                throw new Exception('Product not found.');
-            }
-
-            $categoryModel = new Category();
-            $categories    = $categoryModel->getAll();
-            $csrfToken     = $this->generateCsrfToken();
-
-            require __DIR__ . '/../../Views/admin/products/edit.php';
-        } catch (Exception $e) {
-            echo htmlspecialchars($e->getMessage());
+            $this->productService->createProduct($data, $_FILES['image'] ?? null);
+            $_SESSION['success'] = 'Product created successfully.';
+            header('Location: /admin/products');
+        } catch (\Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            header('Location: /admin/products/create');
         }
+        exit;
     }
-    public function update()
+
+    public function edit(int $id): void
     {
-        try {
-            $this->validateCsrfToken();
-
-            $id = $this->getValidId();
-
-            $this->productService->updateProduct(
-                $id,
-                $_POST,
-                $_FILES['image'] ?? null
-            );
-
+        $product = $this->productService->getProductById($id);
+        if (!$product) {
             header('Location: /admin/products');
             exit;
-
-        } catch (Exception $e) {
-            echo htmlspecialchars($e->getMessage());
         }
+        $categories = $this->productService->getAllCategories();
+        require_once __DIR__ . '/../../Views/admin/products/form.php';
     }
-    public function delete()
+
+    public function update(int $id): void
     {
+        $data = [
+            'name' => filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
+            'price' => filter_input(INPUT_POST, 'price', FILTER_VALIDATE_FLOAT),
+            'category_id' => filter_input(INPUT_POST, 'category_id', FILTER_VALIDATE_INT),
+        ];
+
         try {
-            $this->validateCsrfToken();
-
-            $id = $this->getValidId();
-
-            $this->productService->deleteProduct($id);
-
-            header('Location: /admin/products');
-            exit;
-
-        } catch (Exception $e) {
-            echo htmlspecialchars($e->getMessage());
+            $this->productService->updateProduct($id, $data, $_FILES['image'] ?? null);
+            $_SESSION['success'] = 'Product updated successfully.';
+        } catch (\Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
         }
-    }
-    public function toggle()
-    {
-        try {
-            $this->validateCsrfToken();
-
-            $id = $this->getValidId();
-
-            $this->productService->toggleAvailability($id);
-
-            header('Location: /admin/products');
-            exit;
-
-        } catch (Exception $e) {
-            echo htmlspecialchars($e->getMessage());
-        }
-    }
-    public function create()
-    {
-        $categoryModel = new Category();
-        $categories    = $categoryModel->getAll();
-        $csrfToken     = $this->generateCsrfToken();
-
-        require __DIR__ . '/../../Views/admin/products/create.php';
+        header('Location: /admin/products');
+        exit;
     }
 
-    public function store()
+    public function toggleAvailability(int $id): void
     {
-        try {
-            $this->validateCsrfToken();
+        $this->productService->toggleAvailability($id);
+        header('Location: /admin/products');
+        exit;
+    }
 
-            $this->productService->createProduct($_POST, $_FILES['image'] ?? null);
-
-            header('Location: /admin/products');
-            exit;
-
-        } catch (Exception $e) {
-            echo htmlspecialchars($e->getMessage());
+    public function delete(int $id): void
+    {
+        $this->productService->deleteProduct($id);
+        header('Location: /admin/products');
+        exit;
+    }
+    
+    public function storeCategory(): void
+    {
+        $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        if ($name) {
+            $this->productService->createCategory($name);
         }
+        header('Location: /admin/products/create');
+        exit;
     }
 }

@@ -1,35 +1,18 @@
-document.addEventListener("DOMContentLoaded", function () {
+(function () {
+    'use strict';
 
-    const buttons = document.querySelectorAll(".view-user-orders");
+    var form = document.querySelector('form[action$="/admin/checks"]');
+    if (!form) {
+        return;
+    }
 
-    buttons.forEach(button => {
+    var from = form.querySelector('input[name="date_from"]');
+    var to = form.querySelector('input[name="date_to"]');
 
-        button.addEventListener("click", function (e) {
-
-            e.preventDefault();
-
-            const userId = this.dataset.id;
-
-            fetch(`/admin/checks/user-orders?id=${userId}`)
-
-            .then(response => response.json())
-
-            .then(data => {
-
-                console.log("User orders:", data);
-
-                alert("Orders loaded. Check console.");
-
-            })
-
-            .catch(error => {
-
-                console.error("Error loading orders", error);
-
-            });
-
-        });
-
+    form.addEventListener('submit', function (event) {
+        if (from && to && from.value && to.value && from.value > to.value) {
+            event.preventDefault();
+            to.focus();
+        }
     });
-
-});
+})();
