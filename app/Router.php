@@ -25,16 +25,6 @@ class Router {
         return $this;
     }
 
-    public function delete(string $url, callable $action): self {
-        $this->add('DELETE', $url, $action);
-        return $this;
-    }
-
-    public function put(string $url, callable $action): self {
-        $this->add('PUT', $url, $action);
-        return $this;
-    }
-
     public function route(string $method, string $url): void {
         $route = $this->findRoute($method, $url);
         if ($route) {

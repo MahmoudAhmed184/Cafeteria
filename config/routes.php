@@ -19,6 +19,7 @@ use App\Controllers\Admin\ProductController;
 use App\Controllers\Admin\UserController;
 use App\Controllers\AuthController;
 use App\Controllers\CartController;
+use App\Controllers\DashboardController;
 use App\Controllers\OrderController;
 use App\Models\Category;
 use App\Models\Order;
@@ -33,6 +34,10 @@ use App\Services\ManualOrderService;
 use App\Services\OrderService;
 use App\Services\ProductService;
 use App\Services\UserService;
+use App\Services\FileUploadService;
+
+require_once __DIR__ . '/../middleware/AuthMiddleware.php';
+require_once __DIR__ . '/../middleware/AdminMiddleware.php';
 
 $pdo = database_connection();
 
@@ -44,21 +49,23 @@ $orderItemModel = new OrderItem($pdo);
 $roomModel = new Room($pdo);
 
 $authService = new AuthService($userModel);
-$productService = new ProductService($productModel, $categoryModel);
-$orderService = new OrderService($pdo, $orderModel, $orderItemModel);
-$userService = new UserService($userModel, $pdo);
-$checkService = new CheckService($pdo);
-$cartService = new CartService($productModel, 'user_cart');
-$manualOrderService = new ManualOrderService($pdo, $orderService);
+$fileUploadService = new FileUploadService();
+$productService = new ProductService($productModel, $categoryModel, $fileUploadService);
+$orderServiceInstance = new OrderService($pdo, $orderModel, $orderItemModel);
+$userService = new UserService($userModel, $fileUploadService);
+$checkService = new CheckService($orderServiceInstance);
+$cartService = new CartService($productModel, $orderServiceInstance, 'user_cart');
+$manualOrderService = new ManualOrderService($userModel, $orderServiceInstance);
 
 $authController = new AuthController($authService);
-$cartController = new CartController($cartService, $productService, $orderService, $roomModel);
-$userOrderController = new OrderController($orderService);
-$adminOrderController = new AdminOrderController($orderService);
+$dashboardController = new DashboardController($cartService, $productService, $orderServiceInstance, $roomModel);
+$cartController = new CartController($cartService, $productService, $orderServiceInstance, $roomModel);
+$userOrderController = new OrderController($orderServiceInstance);
+$adminOrderController = new AdminOrderController($orderServiceInstance);
 $adminManualOrderController = new ManualOrderController($manualOrderService, $productService, $cartService, $roomModel);
 $adminProductController = new ProductController($productService);
-$adminUserController = new UserController($userService);
-$adminCheckController = new CheckController($checkService, $userModel);
+$adminUserController = new UserController($userService, $roomModel);
+$adminCheckController = new CheckController($checkService, $userModel, $orderServiceInstance);
 
 $router->get('/', function (): void {
     if (session_status() === PHP_SESSION_NONE) {
@@ -85,43 +92,43 @@ $router->get('/logout', fn() => $authController->logout());
 $router->get('/forget-password', fn() => $authController->showForgetPasswordForm());
 $router->post('/forget-password', fn() => $authController->resetPassword());
 
-$router->get('/dashboard', fn() => $cartController->dashboard());
-$router->get('/cart', fn() => $cartController->state());
-$router->post('/cart/add', fn() => $cartController->add());
-$router->post('/cart/update', fn() => $cartController->update());
-$router->post('/cart/remove', fn() => $cartController->remove());
-$router->post('/cart/clear', fn() => $cartController->clear());
-$router->post('/orders/confirm', fn() => $cartController->confirm());
+$router->get('/dashboard', function() use ($dashboardController) { \AuthMiddleware::handle(); $dashboardController->index(); });
+$router->get('/cart', function() use ($cartController) { \AuthMiddleware::handle(); $cartController->state(); });
+$router->post('/cart/add', function() use ($cartController) { \AuthMiddleware::handle(); $cartController->add(); });
+$router->post('/cart/update', function() use ($cartController) { \AuthMiddleware::handle(); $cartController->update(); });
+$router->post('/cart/remove', function() use ($cartController) { \AuthMiddleware::handle(); $cartController->remove(); });
+$router->post('/cart/clear', function() use ($cartController) { \AuthMiddleware::handle(); $cartController->clear(); });
+$router->post('/orders/confirm', function() use ($cartController) { \AuthMiddleware::handle(); $cartController->confirm(); });
 
-$router->get('/orders', fn() => $userOrderController->index());
-$router->get('/orders/items', fn() => $userOrderController->items((int) ($_GET['order_id'] ?? 0)));
-$router->post('/orders/cancel', fn() => $userOrderController->cancel((int) ($_POST['order_id'] ?? 0)));
+$router->get('/orders', function() use ($userOrderController) { \AuthMiddleware::handle(); $userOrderController->index(); });
+$router->get('/orders/items', function() use ($userOrderController) { \AuthMiddleware::handle(); $userOrderController->items((int) ($_GET['order_id'] ?? 0)); });
+$router->post('/orders/cancel', function() use ($userOrderController) { \AuthMiddleware::handle(); $userOrderController->cancel((int) ($_POST['order_id'] ?? 0)); });
 
-$router->get('/admin/orders', fn() => $adminOrderController->index());
-$router->post('/admin/orders/deliver', fn() => $adminOrderController->deliver((int) ($_POST['order_id'] ?? 0)));
-$router->post('/admin/orders/done', fn() => $adminOrderController->done((int) ($_POST['order_id'] ?? 0)));
-$router->get('/admin/orders/items', fn() => $adminOrderController->items((int) ($_GET['order_id'] ?? 0)));
+$router->get('/admin/orders', function() use ($adminOrderController) { \AdminMiddleware::handle(); $adminOrderController->index(); });
+$router->post('/admin/orders/deliver', function() use ($adminOrderController) { \AdminMiddleware::handle(); $adminOrderController->deliver((int) ($_POST['order_id'] ?? 0)); });
+$router->post('/admin/orders/done', function() use ($adminOrderController) { \AdminMiddleware::handle(); $adminOrderController->done((int) ($_POST['order_id'] ?? 0)); });
+$router->get('/admin/orders/items', function() use ($adminOrderController) { \AdminMiddleware::handle(); $adminOrderController->items((int) ($_GET['order_id'] ?? 0)); });
 
-$router->get('/admin/manual-order', fn() => $adminManualOrderController->index());
-$router->get('/admin/manual-order/search', fn() => $adminManualOrderController->searchUsers());
-$router->post('/admin/manual-order/store', fn() => $adminManualOrderController->store());
+$router->get('/admin/manual-order', function() use ($adminManualOrderController) { \AdminMiddleware::handle(); $adminManualOrderController->index(); });
+$router->get('/admin/manual-order/search', function() use ($adminManualOrderController) { \AdminMiddleware::handle(); $adminManualOrderController->searchUsers(); });
+$router->post('/admin/manual-order/store', function() use ($adminManualOrderController) { \AdminMiddleware::handle(); $adminManualOrderController->store(); });
 
-$router->get('/admin/products', fn() => $adminProductController->index());
-$router->get('/admin/products/create', fn() => $adminProductController->create());
-$router->post('/admin/products/store', fn() => $adminProductController->store());
-$router->get('/admin/products/edit', fn() => $adminProductController->edit((int) ($_GET['id'] ?? 0)));
-$router->post('/admin/products/update', fn() => $adminProductController->update((int) ($_POST['id'] ?? 0)));
-$router->post('/admin/products/toggle', fn() => $adminProductController->toggleAvailability((int) ($_POST['id'] ?? 0)));
-$router->post('/admin/products/delete', fn() => $adminProductController->delete((int) ($_POST['id'] ?? 0)));
-$router->post('/admin/categories/store', fn() => $adminProductController->storeCategory());
+$router->get('/admin/products', function() use ($adminProductController) { \AdminMiddleware::handle(); $adminProductController->index(); });
+$router->get('/admin/products/create', function() use ($adminProductController) { \AdminMiddleware::handle(); $adminProductController->create(); });
+$router->post('/admin/products/store', function() use ($adminProductController) { \AdminMiddleware::handle(); $adminProductController->store(); });
+$router->get('/admin/products/edit', function() use ($adminProductController) { \AdminMiddleware::handle(); $adminProductController->edit((int) ($_GET['id'] ?? 0)); });
+$router->post('/admin/products/update', function() use ($adminProductController) { \AdminMiddleware::handle(); $adminProductController->update((int) ($_POST['id'] ?? 0)); });
+$router->post('/admin/products/toggle', function() use ($adminProductController) { \AdminMiddleware::handle(); $adminProductController->toggleAvailability((int) ($_POST['id'] ?? 0)); });
+$router->post('/admin/products/delete', function() use ($adminProductController) { \AdminMiddleware::handle(); $adminProductController->delete((int) ($_POST['id'] ?? 0)); });
+$router->post('/admin/categories/store', function() use ($adminProductController) { \AdminMiddleware::handle(); $adminProductController->storeCategory(); });
 
-$router->get('/admin/users', fn() => $adminUserController->index());
-$router->get('/admin/users/create', fn() => $adminUserController->create());
-$router->post('/admin/users/store', fn() => $adminUserController->store());
-$router->get('/admin/users/edit', fn() => $adminUserController->edit((int) ($_GET['id'] ?? 0)));
-$router->post('/admin/users/update', fn() => $adminUserController->update((int) ($_POST['id'] ?? 0)));
-$router->post('/admin/users/delete', fn() => $adminUserController->delete((int) ($_POST['id'] ?? 0)));
+$router->get('/admin/users', function() use ($adminUserController) { \AdminMiddleware::handle(); $adminUserController->index(); });
+$router->get('/admin/users/create', function() use ($adminUserController) { \AdminMiddleware::handle(); $adminUserController->create(); });
+$router->post('/admin/users/store', function() use ($adminUserController) { \AdminMiddleware::handle(); $adminUserController->store(); });
+$router->get('/admin/users/edit', function() use ($adminUserController) { \AdminMiddleware::handle(); $adminUserController->edit((int) ($_GET['id'] ?? 0)); });
+$router->post('/admin/users/update', function() use ($adminUserController) { \AdminMiddleware::handle(); $adminUserController->update((int) ($_POST['id'] ?? 0)); });
+$router->post('/admin/users/delete', function() use ($adminUserController) { \AdminMiddleware::handle(); $adminUserController->delete((int) ($_POST['id'] ?? 0)); });
 
-$router->get('/admin/checks', fn() => $adminCheckController->index());
-$router->get('/admin/checks/user-orders', fn() => $adminCheckController->userOrders((int) ($_GET['user_id'] ?? 0)));
-$router->get('/admin/checks/order-items', fn() => $adminCheckController->orderItems((int) ($_GET['order_id'] ?? 0)));
+$router->get('/admin/checks', function() use ($adminCheckController) { \AdminMiddleware::handle(); $adminCheckController->index(); });
+$router->get('/admin/checks/user-orders', function() use ($adminCheckController) { \AdminMiddleware::handle(); $adminCheckController->userOrders((int) ($_GET['user_id'] ?? 0)); });
+$router->get('/admin/checks/order-items', function() use ($adminCheckController) { \AdminMiddleware::handle(); $adminCheckController->orderItems((int) ($_GET['order_id'] ?? 0)); });

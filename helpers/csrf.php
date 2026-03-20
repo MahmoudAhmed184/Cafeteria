@@ -22,7 +22,13 @@ function verify_csrf_token(?string $token): bool
     }
 
     $sessionToken = $_SESSION['_csrf_token'] ?? '';
-    return is_string($token) && $token !== '' && is_string($sessionToken) && hash_equals($sessionToken, $token);
+    $match = is_string($token) && $token !== '' && is_string($sessionToken) && hash_equals($sessionToken, $token);
+    
+    if (!$match) {
+        error_log("verify_csrf_token failed: token=" . ($token ?: 'NULL') . ", session=" . ($sessionToken ?: 'NULL'));
+    }
+    
+    return $match;
 }
 
 function csrf_token(): string
