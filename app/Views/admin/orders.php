@@ -32,10 +32,12 @@ ob_start();
                 <td><?= $e($order['status'] ?? '') ?></td>
                 <td class="actions">
                     <form method="post" action="<?= defined('BASE_URL') ? BASE_URL . '/admin/orders/deliver' : '/admin/orders/deliver' ?>">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars((string)csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
                         <input type="hidden" name="order_id" value="<?= (int) ($order['id'] ?? 0) ?>">
                         <button type="submit" class="btn btn-outline">Deliver</button>
                     </form>
                     <form method="post" action="<?= defined('BASE_URL') ? BASE_URL . '/admin/orders/done' : '/admin/orders/done' ?>">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars((string)csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
                         <input type="hidden" name="order_id" value="<?= (int) ($order['id'] ?? 0) ?>">
                         <button type="submit" class="btn btn-primary">Done</button>
                     </form>

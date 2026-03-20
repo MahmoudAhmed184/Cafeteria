@@ -1,8 +1,5 @@
 <?php
-/**
- * User dashboard view - FR-CART-001, FR-CART-002, FR-CART-007, FR-CART-008, FR-CART-009
- * Expects data from controller; uses safe defaults when not provided.
- */
+
 $products = isset($products) && is_array($products) ? $products : [];
 $rooms = isset($rooms) && is_array($rooms) ? $rooms : [];
 $cart = isset($cart) && is_array($cart) ? $cart : [];

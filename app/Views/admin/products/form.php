@@ -1,7 +1,5 @@
 <?php
-/**
- * Add/Edit product form - FR-ADM-PRD-003, 004, 005, 007. Mock data for view-first development.
- */
+
 $categories = isset($categories) && is_array($categories) ? $categories : [];
 $product = $product ?? null;
 $isEdit = !empty($product);
@@ -15,7 +13,7 @@ ob_start();
     <h1 class="admin-page-title"><?= $isEdit ? 'Edit product' : 'Add product' ?></h1>
     <form id="product-form" class="card product-form" method="post" action="<?= $e($formAction) ?>"
         enctype="multipart/form-data">
-        <input type="hidden" name="csrf_token" value="<?= $e($csrfToken ?? '') ?>">
+        <input type="hidden" name="csrf_token" value="<?= $e(function_exists('csrf_token') ? csrf_token() : '') ?>">
         <?php if ($isEdit): ?>
             <input type="hidden" name="id" value="<?= (int) ($product['id'] ?? 0) ?>">
         <?php endif; ?>

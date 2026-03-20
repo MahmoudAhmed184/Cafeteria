@@ -1,13 +1,16 @@
 <?php
 
 $user = $user ?? null;
+$rooms = $rooms ?? [];
 $isEdit = is_array($user) && !empty($user['id']);
 $e = static fn($value) => htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 $action = $isEdit ? '/admin/users/update' : '/admin/users/store';
+$csrfToken = function_exists('csrf_token') ? csrf_token() : '';
 ob_start();
 ?>
 <h1 class="admin-page-title"><?= $isEdit ? 'Edit User' : 'Add User' ?></h1>
 <form class="card" method="post" action="<?= defined('BASE_URL') ? BASE_URL . $action : $action ?>" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="<?= $e($csrfToken) ?>">
     <?php if ($isEdit): ?>
     <input type="hidden" name="id" value="<?= (int) $user['id'] ?>">
     <?php endif; ?>
@@ -21,7 +24,12 @@ ob_start();
     </div>
     <div class="form-group">
         <label class="form-label" for="room_no">Room</label>
-        <input class="form-control" type="text" id="room_no" name="room_no" value="<?= $e($user['room_no'] ?? '') ?>" required>
+        <select class="form-control" id="room_no" name="room_no" required>
+            <option value="">Select Room</option>
+            <?php foreach ($rooms as $r): ?>
+            <option value="<?= $e($r['room_number']) ?>" <?= ($user['room_no'] ?? '') === $r['room_number'] ? 'selected' : '' ?>><?= $e($r['room_number']) ?></option>
+            <?php endforeach; ?>
+        </select>
     </div>
     <div class="form-group">
         <label class="form-label" for="ext">Extension</label>
@@ -29,7 +37,11 @@ ob_start();
     </div>
     <div class="form-group">
         <label class="form-label" for="password">Password<?= $isEdit ? ' (leave blank to keep current)' : '' ?></label>
-        <input class="form-control" type="password" id="password" name="password" <?= $isEdit ? '' : 'required' ?>>
+        <input class="form-control" type="password" id="password" name="password" <?= $isEdit ? '' : 'required' ?> minlength="8">
+    </div>
+    <div class="form-group">
+        <label class="form-label" for="confirm_password">Confirm Password</label>
+        <input class="form-control" type="password" id="confirm_password" name="confirm_password" <?= $isEdit ? '' : 'required' ?> minlength="8">
     </div>
     <div class="form-group">
         <label class="form-label" for="profile_pic">Profile Picture</label>
@@ -37,6 +49,7 @@ ob_start();
     </div>
     <div class="form-actions">
         <button class="btn btn-primary" type="submit">Save</button>
+        <button class="btn btn-secondary" type="reset">Reset</button>
         <a class="btn btn-outline" href="<?= defined('BASE_URL') ? BASE_URL . '/admin/users' : '/admin/users' ?>">Back</a>
     </div>
 </form>

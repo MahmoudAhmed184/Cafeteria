@@ -34,10 +34,12 @@ ob_start();
                 <td class="actions">
                     <a class="btn btn-outline" href="<?= defined('BASE_URL') ? BASE_URL . '/admin/products/edit?id=' . (int) ($product['id'] ?? 0) : '/admin/products/edit?id=' . (int) ($product['id'] ?? 0) ?>">Edit</a>
                     <form method="post" action="<?= defined('BASE_URL') ? BASE_URL . '/admin/products/toggle' : '/admin/products/toggle' ?>">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars((string)csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
                         <input type="hidden" name="id" value="<?= (int) ($product['id'] ?? 0) ?>">
                         <button type="submit" class="btn btn-outline">Toggle</button>
                     </form>
                     <form method="post" action="<?= defined('BASE_URL') ? BASE_URL . '/admin/products/delete' : '/admin/products/delete' ?>">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars((string)csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
                         <input type="hidden" name="id" value="<?= (int) ($product['id'] ?? 0) ?>">
                         <button type="submit" class="btn btn-outline">Delete</button>
                     </form>

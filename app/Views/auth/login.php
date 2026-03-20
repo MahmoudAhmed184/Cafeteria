@@ -28,7 +28,7 @@ ob_start();
     <?php endif; ?>
     <form class="auth-form" method="post" action="<?= defined('BASE_URL') ? BASE_URL . '/login' : '/login' ?>"
         novalidate>
-        <input type="hidden" name="csrf_token" value="<?= $e($csrfToken ?? '') ?>">
+        <input type="hidden" name="csrf_token" value="<?= $e(function_exists('csrf_token') ? csrf_token() : '') ?>">
         <div class="form-group">
             <label class="form-label" for="email">Email</label>
             <input type="email" id="email" name="email"

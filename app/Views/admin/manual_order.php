@@ -1,8 +1,4 @@
 <?php
-/**
- * Manual order view - FR-ADM-MAN-001, 002, 003. Place order on behalf of a user.
- * Expects data from controller; uses safe defaults when not provided.
- */
 $users = isset($users) && is_array($users) ? $users : [];
 $products = isset($products) && is_array($products) ? $products : [];
 $rooms = isset($rooms) && is_array($rooms) ? $rooms : [];

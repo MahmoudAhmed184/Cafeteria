@@ -34,6 +34,7 @@ ob_start();
                 <td class="actions">
                     <a class="btn btn-outline" href="<?= defined('BASE_URL') ? BASE_URL . '/admin/users/edit?id=' . (int) ($user['id'] ?? 0) : '/admin/users/edit?id=' . (int) ($user['id'] ?? 0) ?>">Edit</a>
                     <form method="post" action="<?= defined('BASE_URL') ? BASE_URL . '/admin/users/delete' : '/admin/users/delete' ?>">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars((string)csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
                         <input type="hidden" name="id" value="<?= (int) ($user['id'] ?? 0) ?>">
                         <button type="submit" class="btn btn-outline">Delete</button>
                     </form>

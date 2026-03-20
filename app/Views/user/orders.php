@@ -31,6 +31,7 @@ ob_start();
                 <td>
                     <?php if (($order['status'] ?? '') === 'Processing'): ?>
                     <form method="post" action="<?= defined('BASE_URL') ? BASE_URL . '/orders/cancel' : '/orders/cancel' ?>">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars((string)csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
                         <input type="hidden" name="order_id" value="<?= (int) ($order['id'] ?? 0) ?>">
                         <button type="submit" class="btn btn-outline">Cancel</button>
                     </form>
@@ -41,6 +42,11 @@ ob_start();
             <?php endif; ?>
         </tbody>
     </table>
+    <?php
+    $currentPage = (int) ($_GET['page'] ?? 1);
+    $basePath = '/orders';
+    require __DIR__ . '/../partials/pagination.php';
+    ?>
 </div>
 <?php
 $content = ob_get_clean();
