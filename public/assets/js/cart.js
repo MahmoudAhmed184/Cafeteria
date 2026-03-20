@@ -6,6 +6,11 @@
     Object.keys(payload).forEach(function (key) {
       formData.append(key, payload[key]);
     });
+    // Append CSRF token if present in meta tag
+    var csrfMeta = document.querySelector('meta[name="csrf-token"]');
+    if (csrfMeta && !formData.has('csrf_token')) {
+        formData.append('csrf_token', csrfMeta.content);
+    }
     return formData;
   }
 

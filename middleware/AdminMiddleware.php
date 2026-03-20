@@ -14,7 +14,7 @@ class AdminMiddleware
             redirect(($base !== '' ? $base : '') . '/login');
         }
 
-        if ($_SESSION['role_id'] != 1) {
+        if ((int) $_SESSION['role_id'] !== 1) {
             redirect(($base !== '' ? $base : '') . '/dashboard');
         }
     }
