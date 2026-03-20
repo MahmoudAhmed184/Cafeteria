@@ -20,11 +20,12 @@ ob_start();
 </div>
 <div class="manual-order-user-section form-group">
     <label class="form-label" for="manual-order-user">Add to User</label>
-    <input type="text" id="manual-order-user" class="form-control" list="manual-order-user-list" placeholder="Search by name or email..." aria-label="Select user">
+    <input type="text" id="manual-order-user" class="form-control" list="manual-order-user-list"
+        placeholder="Search by name or email..." aria-label="Select user">
     <datalist id="manual-order-user-list">
         <?php foreach ($users as $u): ?>
-        <option value="<?= $e($u['name']) ?> (<?= $e($u['email']) ?>)">
-        <?php endforeach; ?>
+            <option value="<?= $e($u['name']) ?> (<?= $e($u['email']) ?>)">
+            <?php endforeach; ?>
     </datalist>
     <input type="hidden" name="user_id" id="manual-order-user-id" value="">
 </div>
@@ -32,37 +33,42 @@ ob_start();
     <div class="dashboard-main">
         <div class="search-bar">
             <label class="form-label" for="manual-product-search">Search products</label>
-            <input type="search" id="manual-product-search" class="form-control" placeholder="Filter by product name..." aria-label="Search products">
+            <input type="search" id="manual-product-search" class="form-control" placeholder="Filter by product name..."
+                aria-label="Search products">
         </div>
         <div class="products-grid" id="products-grid">
             <?php foreach ($products as $p): ?>
-            <?php if (!empty($p['is_available'])): ?>
-            <article class="product-card" data-product-name="<?= $e($p['name']) ?>">
-                <img src="<?= $e($p['image'] ?? '') ?>" alt="" class="product-card-image" width="200" height="200">
-                <div class="product-card-body">
-                    <h3 class="product-card-name"><?= $e($p['name']) ?></h3>
-                    <p class="product-card-price"><?= $e(number_format((float)($p['price'] ?? 0), 2)) ?> EGP</p>
-                    <button type="button" class="btn btn-primary add-to-cart-btn" data-product-id="<?= (int)$p['id'] ?>" data-product-name="<?= $e($p['name']) ?>" data-price="<?= $e($p['price']) ?>">Add to Cart</button>
-                </div>
-            </article>
-            <?php endif; ?>
+                <?php if (!empty($p['is_available'])): ?>
+                    <article class="product-card" data-product-name="<?= $e($p['name']) ?>">
+                        <img src="<?= $e($p['image'] ?? '') ?>" alt="" class="product-card-image" width="200" height="200">
+                        <div class="product-card-body">
+                            <h3 class="product-card-name"><?= $e($p['name']) ?></h3>
+                            <p class="product-card-price"><?= $e(number_format((float) ($p['price'] ?? 0), 2)) ?> EGP</p>
+                            <button type="button" class="btn btn-primary add-to-cart-btn" data-product-id="<?= (int) $p['id'] ?>"
+                                data-product-name="<?= $e($p['name']) ?>" data-price="<?= $e($p['price']) ?>">Add to
+                                Cart</button>
+                        </div>
+                    </article>
+                <?php endif; ?>
             <?php endforeach; ?>
         </div>
         <section class="order-form-section" aria-label="Order details">
             <h2 class="card-title">Delivery details</h2>
-            <form id="confirm-order-form" class="order-form">
+            <form id="confirm-order-form" class="order-form"
+                action="<?= defined('BASE_URL') ? BASE_URL . '/admin/manual-order/store' : '/admin/manual-order/store' ?>">
                 <div class="form-group">
                     <label class="form-label" for="room_no">Room</label>
                     <select id="room_no" name="room_no" class="form-control" required>
                         <option value="">Select room</option>
                         <?php foreach ($rooms as $r): ?>
-                        <option value="<?= $e($r['room_number']) ?>"><?= $e($r['room_number']) ?></option>
+                            <option value="<?= $e($r['room_number']) ?>"><?= $e($r['room_number']) ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="notes">Notes (max 500 characters)</label>
-                    <textarea id="notes" name="notes" class="form-control" maxlength="500" rows="3" placeholder="Special instructions..."></textarea>
+                    <textarea id="notes" name="notes" class="form-control" maxlength="500" rows="3"
+                        placeholder="Special instructions..."></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary confirm-order-btn">Confirm order</button>
             </form>
@@ -74,33 +80,34 @@ ob_start();
         ?>
     </aside>
 </div>
-<script src="<?= defined('BASE_URL') ? rtrim(BASE_URL, '/') . '/' : '' ?>assets/js/search.js"></script>
-<script src="<?= defined('BASE_URL') ? rtrim(BASE_URL, '/') . '/' : '' ?>assets/js/cart.js"></script>
+<?php $v = time(); ?>
+<script src="/assets/js/search.js?v=<?= $v ?>"></script>
+<script src="/assets/js/cart.js?v=<?= $v ?>"></script>
 <script>
-(function () {
-    'use strict';
-    var userInput = document.getElementById('manual-order-user');
-    var userIdInput = document.getElementById('manual-order-user-id');
-    if (!userInput || !userIdInput) return;
+    (function () {
+        'use strict';
+        var userInput = document.getElementById('manual-order-user');
+        var userIdInput = document.getElementById('manual-order-user-id');
+        if (!userInput || !userIdInput) return;
 
-    var usersMap = <?= json_encode(
-        array_map(function ($u) {
-            return ['label' => $u['name'] . ' (' . $u['email'] . ')', 'id' => $u['id']];
-        }, $users),
-        JSON_HEX_TAG | JSON_HEX_AMP
-    ) ?>;
+        var usersMap = <?= json_encode(
+            array_map(function ($u) {
+                return ['label' => $u['name'] . ' (' . $u['email'] . ')', 'id' => $u['id']];
+            }, $users),
+            JSON_HEX_TAG | JSON_HEX_AMP
+        ) ?>;
 
-    var lookup = {};
-    usersMap.forEach(function (u) { lookup[u.label] = u.id; });
+        var lookup = {};
+        usersMap.forEach(function (u) { lookup[u.label] = u.id; });
 
-    function syncUserId() {
-        var val = userInput.value.trim();
-        userIdInput.value = lookup[val] !== undefined ? lookup[val] : '';
-    }
+        function syncUserId() {
+            var val = userInput.value.trim();
+            userIdInput.value = lookup[val] !== undefined ? lookup[val] : '';
+        }
 
-    userInput.addEventListener('input', syncUserId);
-    userInput.addEventListener('change', syncUserId);
-})();
+        userInput.addEventListener('input', syncUserId);
+        userInput.addEventListener('change', syncUserId);
+    })();
 </script>
 <?php
 $content = ob_get_clean();

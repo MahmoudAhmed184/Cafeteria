@@ -49,14 +49,13 @@ $orderService = new OrderService($pdo, $orderModel, $orderItemModel);
 $userService = new UserService($userModel, $pdo);
 $checkService = new CheckService($pdo);
 $cartService = new CartService($productModel, 'user_cart');
-$manualCartService = new CartService($productModel, 'manual_order_cart');
 $manualOrderService = new ManualOrderService($pdo, $orderService);
 
 $authController = new AuthController($authService);
 $cartController = new CartController($cartService, $productService, $orderService, $roomModel);
 $userOrderController = new OrderController($orderService);
 $adminOrderController = new AdminOrderController($orderService);
-$adminManualOrderController = new ManualOrderController($manualOrderService, $productService, $manualCartService, $roomModel);
+$adminManualOrderController = new ManualOrderController($manualOrderService, $productService, $cartService, $roomModel);
 $adminProductController = new ProductController($productService);
 $adminUserController = new UserController($userService);
 $adminCheckController = new CheckController($checkService, $userModel);
