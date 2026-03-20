@@ -89,7 +89,9 @@ class ProductController
 
     public function storeCategory(): void
     {
-        $name = trim((string) filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
+        $input = json_decode(file_get_contents('php://input'), true);
+        $name = $input['name'] ?? ($_POST['name'] ?? '');
+        $name = trim(htmlspecialchars(strip_tags((string) $name), ENT_QUOTES, 'UTF-8'));
 
         if ($name === '') {
             http_response_code(422);

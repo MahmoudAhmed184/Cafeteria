@@ -15,6 +15,10 @@ class OrderController
 
     public function index(): void
     {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
         $userId = $_SESSION['user_id'] ?? null;
         if (!$userId) {
             header('Location: /login');
@@ -34,6 +38,10 @@ class OrderController
 
     public function cancel(int $orderId): void
     {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
         $userId = $_SESSION['user_id'] ?? null;
         if (!$userId) {
             header('Location: /login');
@@ -54,6 +62,10 @@ class OrderController
 
     public function items(int $orderId): void
     {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
         $userId = $_SESSION['user_id'] ?? null;
         if (!$userId) {
             http_response_code(401);
@@ -62,7 +74,7 @@ class OrderController
         }
 
         $items = $this->orderService->getOrderItems($orderId);
-        
+
         header('Content-Type: application/json');
         echo json_encode($items);
         exit;

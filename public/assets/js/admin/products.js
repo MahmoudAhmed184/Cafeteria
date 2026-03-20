@@ -65,6 +65,7 @@
 
   function closeAddCategoryModal() {
     if (addCategoryModal) {
+      console.log(addCategoryModal);
       addCategoryModal.hidden = true;
       addCategoryModal.setAttribute("hidden", "");
       addCategoryModal.classList.remove("is-open");
