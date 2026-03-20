@@ -95,8 +95,15 @@ class User
 
     public function delete(int $id): bool
     {
-        $stmt = $this->connection->prepare('DELETE FROM users WHERE id = :id AND is_active = 1');
+        $stmt = $this->connection->prepare('DELETE FROM users WHERE id = :id');
         return $stmt->execute(['id' => $id]);
+    }
+
+    public function getOrderCount(int $id): int
+    {
+        $stmt = $this->connection->prepare('SELECT COUNT(*) FROM orders WHERE user_id = :id');
+        $stmt->execute(['id' => $id]);
+        return (int) $stmt->fetchColumn();
     }
 
 

@@ -17,10 +17,11 @@ class Product
     {
         $sql = 'SELECT p.*, c.name as category_name 
                 FROM products p 
-                JOIN categories c ON p.category_id = c.id';
+                JOIN categories c ON p.category_id = c.id
+                WHERE p.is_deleted = 0';
         
         if ($availableOnly) {
-            $sql .= ' WHERE p.is_available = 1';
+            $sql .= ' AND p.is_available = 1';
         }
         
         $sql .= ' ORDER BY p.name ASC';
@@ -78,11 +79,11 @@ class Product
         $count = $stmt->fetchColumn();
 
         if ($count > 0) {
-            $stmt = $this->connection->prepare('UPDATE products SET is_available = 0 WHERE id = :id');
+            $stmt = $this->connection->prepare('UPDATE products SET is_available = 0, is_deleted = 1 WHERE id = :id');
             return $stmt->execute(['id' => $id]);
         }
 
-        $stmt = $this->connection->prepare('DELETE FROM products WHERE id = :id');
+        $stmt = $this->connection->prepare('UPDATE products SET is_deleted = 1 WHERE id = :id');
         return $stmt->execute(['id' => $id]);
     }
 
