@@ -4,7 +4,9 @@ namespace App\Controllers\Admin;
 
 use App\Services\Contracts\ProductServiceInterface;
 
-class ProductController
+use App\Controllers\BaseController;
+
+class ProductController extends BaseController
 {
     private ProductServiceInterface $productService;
 
@@ -15,18 +17,21 @@ class ProductController
 
     public function index(): void
     {
+        $this->ensureAdmin();
         $products = $this->productService->getAllProducts();
         require_once __DIR__ . '/../../Views/admin/products/index.php';
     }
 
     public function create(): void
     {
+        $this->ensureAdmin();
         $categories = $this->productService->getAllCategories();
         require_once __DIR__ . '/../../Views/admin/products/form.php';
     }
 
     public function store(): void
     {
+        $this->ensureAdmin();
         $data = [
             'name' => filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
             'price' => filter_input(INPUT_POST, 'price', FILTER_VALIDATE_FLOAT),
@@ -46,6 +51,7 @@ class ProductController
 
     public function edit(int $id): void
     {
+        $this->ensureAdmin();
         $product = $this->productService->getProductById($id);
         if (!$product) {
             header('Location: /admin/products');
@@ -57,6 +63,7 @@ class ProductController
 
     public function update(int $id): void
     {
+        $this->ensureAdmin();
         $data = [
             'name' => filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
             'price' => filter_input(INPUT_POST, 'price', FILTER_VALIDATE_FLOAT),
@@ -75,6 +82,7 @@ class ProductController
 
     public function toggleAvailability(int $id): void
     {
+        $this->ensureAdmin();
         $this->productService->toggleAvailability($id);
         header('Location: /admin/products');
         exit;
@@ -82,6 +90,7 @@ class ProductController
 
     public function delete(int $id): void
     {
+        $this->ensureAdmin();
         $this->productService->deleteProduct($id);
         header('Location: /admin/products');
         exit;
@@ -89,6 +98,7 @@ class ProductController
 
     public function storeCategory(): void
     {
+        $this->ensureAdmin();
         $input = json_decode(file_get_contents('php://input'), true);
         $name = $input['name'] ?? ($_POST['name'] ?? '');
         $name = trim(htmlspecialchars(strip_tags((string) $name), ENT_QUOTES, 'UTF-8'));

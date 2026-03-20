@@ -3,14 +3,17 @@
 namespace App\Controllers\Admin;
 
 use App\Services\Contracts\UserServiceInterface;
+use App\Models\Room;
 
 class UserController
 {
     private UserServiceInterface $userService;
+    private Room $roomModel;
 
-    public function __construct(UserServiceInterface $userService)
+    public function __construct(UserServiceInterface $userService, Room $roomModel)
     {
         $this->userService = $userService;
+        $this->roomModel = $roomModel;
     }
 
     public function index(): void
@@ -21,11 +24,18 @@ class UserController
 
     public function create(): void
     {
+        $rooms = $this->roomModel->fetchAll();
         require_once __DIR__ . '/../../Views/admin/users/form.php';
     }
 
     public function store(): void
     {
+        if (($_POST['password'] ?? '') !== ($_POST['confirm_password'] ?? '')) {
+            $_SESSION['error'] = 'Passwords do not match.';
+            header('Location: /admin/users/create');
+            exit;
+        }
+
         $data = [
             'name' => filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
             'email' => filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL),
@@ -52,11 +62,18 @@ class UserController
             header('Location: /admin/users');
             exit;
         }
+        $rooms = $this->roomModel->fetchAll();
         require_once __DIR__ . '/../../Views/admin/users/form.php';
     }
 
     public function update(int $id): void
     {
+        if (!empty($_POST['password']) && $_POST['password'] !== ($_POST['confirm_password'] ?? '')) {
+            $_SESSION['error'] = 'Passwords do not match.';
+            header('Location: /admin/users/edit?id=' . $id);
+            exit;
+        }
+
         $data = [
             'name' => filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS),
             'email' => filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL),

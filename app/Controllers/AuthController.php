@@ -15,6 +15,13 @@ class AuthController
 
     public function showLoginForm(): void
     {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (isset($_SESSION['user_id'])) {
+            header('Location: ' . ((int)$_SESSION['role_id'] === 1 ? '/admin/orders' : '/dashboard'));
+            exit;
+        }
         require_once __DIR__ . '/../Views/auth/login.php';
     }
 
@@ -54,6 +61,13 @@ class AuthController
 
     public function showForgetPasswordForm(): void
     {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (isset($_SESSION['user_id'])) {
+            header('Location: ' . ((int)$_SESSION['role_id'] === 1 ? '/admin/orders' : '/dashboard'));
+            exit;
+        }
         require_once __DIR__ . '/../Views/auth/forget_password.php';
     }
 

@@ -4,7 +4,9 @@ namespace App\Controllers\Admin;
 
 use App\Services\Contracts\OrderServiceInterface;
 
-class AdminOrderController
+use App\Controllers\BaseController;
+
+class AdminOrderController extends BaseController
 {
     private OrderServiceInterface $orderService;
 
@@ -15,12 +17,14 @@ class AdminOrderController
 
     public function index(): void
     {
+        $this->ensureAdmin();
         $orders = $this->orderService->getAllProcessingOrders();
         require_once __DIR__ . '/../../Views/admin/orders.php';
     }
 
     public function deliver(int $orderId): void
     {
+        $this->ensureAdmin();
         $this->orderService->updateOrderStatus($orderId, 'Out for Delivery');
         header('Location: /admin/orders');
         exit;
@@ -28,6 +32,7 @@ class AdminOrderController
 
     public function done(int $orderId): void
     {
+        $this->ensureAdmin();
         $this->orderService->updateOrderStatus($orderId, 'Done');
         header('Location: /admin/orders');
         exit;
@@ -35,9 +40,8 @@ class AdminOrderController
 
     public function items(int $orderId): void
     {
+        $this->ensureAdmin(true);
         $items = $this->orderService->getOrderItems($orderId);
-        header('Content-Type: application/json');
-        echo json_encode($items);
-        exit;
+        $this->respondJson(['items' => $items]);
     }
 }
