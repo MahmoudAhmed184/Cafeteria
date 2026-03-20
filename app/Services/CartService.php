@@ -9,12 +9,49 @@ use Exception;
 class CartService implements CartServiceInterface
 {
     private Product $productModel;
+    private \App\Services\Contracts\OrderServiceInterface $orderService;
     private string $sessionKey;
 
-    public function __construct(Product $productModel, string $sessionKey = 'cart')
-    {
+    public function __construct(
+        Product $productModel, 
+        \App\Services\Contracts\OrderServiceInterface $orderService,
+        string $sessionKey = 'cart'
+    ) {
         $this->productModel = $productModel;
+        $this->orderService = $orderService;
         $this->sessionKey = $sessionKey;
+    }
+
+    public function placeOrder(int $userId, string $roomNo, ?string $notes): int
+    {
+        if (!$this->validateCart()) {
+            throw new Exception("Cart contains invalid or unavailable items.");
+        }
+
+        $cartState = $this->getCartState();
+        if ($cartState['items'] === []) {
+            throw new Exception("Cart is empty.");
+        }
+
+        $orderItems = array_map(
+            static fn(array $item): array => [
+                'product_id' => (int) $item['product_id'],
+                'quantity' => (int) $item['quantity'],
+                'price' => (float) $item['price'],
+            ],
+            $cartState['items']
+        );
+
+        $orderId = $this->orderService->createOrder(
+            $userId,
+            $roomNo,
+            $notes,
+            $orderItems,
+            (float) $cartState['total']
+        );
+
+        $this->clearCart();
+        return $orderId;
     }
 
     public function getCartState(): array

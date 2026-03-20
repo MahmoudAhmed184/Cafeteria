@@ -6,44 +6,27 @@ use App\Services\Contracts\ManualOrderServiceInterface;
 use App\Services\Contracts\OrderServiceInterface;
 use Exception;
 use PDO;
+use App\Models\User;
 
 class ManualOrderService implements ManualOrderServiceInterface
 {
-    private PDO $connection;
+    private User $userModel;
     private OrderServiceInterface $orderService;
 
-    public function __construct(PDO $connection, OrderServiceInterface $orderService)
+    public function __construct(User $userModel, OrderServiceInterface $orderService)
     {
-        $this->connection = $connection;
+        $this->userModel = $userModel;
         $this->orderService = $orderService;
     }
 
     public function searchUsers(string $searchTerm = ''): array
     {
-        $normalized = trim($searchTerm);
-        $query = '%' . $normalized . '%';
-
-        $sql = 'SELECT id, name, email, room_no, ext
-                FROM users
-                WHERE is_active = 1
-                  AND role_id = 2
-                  AND (name LIKE ? OR email LIKE ?)
-                ORDER BY name ASC
-                LIMIT 20';
-        $statement = $this->connection->prepare($sql);
-        $statement->execute([$query, $query]);
-
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
+        return $this->userModel->searchActiveUsers(trim($searchTerm));
     }
 
     public function placeOrderForUser(int $userId, string $roomNo, ?string $notes, array $cartItems, float $totalAmount): int
     {
-        $statement = $this->connection->prepare(
-            'SELECT id FROM users WHERE id = :user_id AND is_active = 1 AND role_id = 2 LIMIT 1'
-        );
-        $statement->execute(['user_id' => $userId]);
-
-        if (!$statement->fetchColumn()) {
+        if (!$this->userModel->isActiveUser($userId)) {
             throw new Exception('Selected user not found or is deactivated.');
         }
 

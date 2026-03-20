@@ -11,11 +11,13 @@ class ProductService implements ProductServiceInterface
 {
     private Product $productModel;
     private Category $categoryModel;
+    private FileUploadService $fileUploadService;
 
-    public function __construct(Product $productModel, Category $categoryModel)
+    public function __construct(Product $productModel, Category $categoryModel, FileUploadService $fileUploadService)
     {
         $this->productModel = $productModel;
         $this->categoryModel = $categoryModel;
+        $this->fileUploadService = $fileUploadService;
     }
 
     public function getAllProducts(bool $availableOnly = false): array
@@ -33,10 +35,11 @@ class ProductService implements ProductServiceInterface
     {
         if ($file && $file['error'] === UPLOAD_ERR_OK) {
             $data['image'] = $this->uploadImage($file);
-        } else {
+        }
+        else {
             throw new Exception("Image is required for new products.");
         }
-        
+
         return $this->productModel->create($data);
     }
 
@@ -45,7 +48,7 @@ class ProductService implements ProductServiceInterface
         if ($file && $file['error'] === UPLOAD_ERR_OK) {
             $data['image'] = $this->uploadImage($file);
         }
-        
+
         return $this->productModel->update($productId, $data);
     }
 
@@ -71,23 +74,6 @@ class ProductService implements ProductServiceInterface
 
     private function uploadImage(array $file): string
     {
-        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mimeType = finfo_file($finfo, $file['tmp_name']);
-        finfo_close($finfo);
-
-        if (!in_array($mimeType, $allowedTypes, true)) {
-            throw new Exception("Invalid file type.");
-        }
-
-        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $filename = uniqid('prod_', true) . '.' . $extension;
-        $destination = __DIR__ . '/../../uploads/products/' . $filename;
-
-        if (!move_uploaded_file($file['tmp_name'], $destination)) {
-            throw new Exception("Failed to move uploaded file.");
-        }
-
-        return $filename;
+        return $this->fileUploadService->uploadImage($file, 'products', 'prod');
     }
 }

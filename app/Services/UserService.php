@@ -10,12 +10,12 @@ use PDO;
 class UserService implements UserServiceInterface
 {
     private User $userModel;
-    private PDO $connection;
+    private FileUploadService $fileUploadService;
 
-    public function __construct(User $userModel, PDO $connection)
+    public function __construct(User $userModel, FileUploadService $fileUploadService)
     {
         $this->userModel = $userModel;
-        $this->connection = $connection;
+        $this->fileUploadService = $fileUploadService;
     }
 
     public function getAllUsers(): array
@@ -32,7 +32,7 @@ class UserService implements UserServiceInterface
     public function createUser(array $data, ?array $file = null): int
     {
         $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
-        
+
         if ($file && $file['error'] === UPLOAD_ERR_OK) {
             $data['profile_pic'] = $this->uploadImage($file);
         }
@@ -44,8 +44,9 @@ class UserService implements UserServiceInterface
     {
         if (!empty($data['password'])) {
             $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
-        } else {
-            unset($data['password']); // Model should handle if password is absent
+        }
+        else {
+            unset($data['password']);
         }
 
         if ($file && $file['error'] === UPLOAD_ERR_OK) {
@@ -57,37 +58,17 @@ class UserService implements UserServiceInterface
 
     public function deleteOrDeactivateUser(int $userId): bool
     {
-        $stmt = $this->connection->prepare('SELECT COUNT(*) FROM orders WHERE user_id = :user_id');
-        $stmt->execute(['user_id' => $userId]);
-        $orderCount = $stmt->fetchColumn();
+        $orderCount = $this->userModel->getOrderCount($userId);
 
         if ($orderCount > 0) {
             return $this->userModel->deactivate($userId);
         }
 
-        $stmt = $this->connection->prepare('DELETE FROM users WHERE id = :user_id AND is_active = 1');
-        return $stmt->execute(['user_id' => $userId]);
+        return $this->userModel->delete($userId);
     }
 
     private function uploadImage(array $file): string
     {
-        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mimeType = finfo_file($finfo, $file['tmp_name']);
-        finfo_close($finfo);
-
-        if (!in_array($mimeType, $allowedTypes, true)) {
-            throw new Exception("Invalid file type.");
-        }
-
-        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $filename = uniqid('usr_', true) . '.' . $extension;
-        $destination = __DIR__ . '/../../uploads/profiles/' . $filename;
-
-        if (!move_uploaded_file($file['tmp_name'], $destination)) {
-            throw new Exception("Failed to move uploaded file.");
-        }
-
-        return $filename;
+        return $this->fileUploadService->uploadImage($file, 'profiles', 'usr');
     }
 }

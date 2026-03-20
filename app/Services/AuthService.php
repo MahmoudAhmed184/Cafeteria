@@ -48,6 +48,15 @@ class AuthService implements AuthServiceInterface
     {
         $user = $this->userModel->findByEmail($email);
         if ($user) {
+            $token = bin2hex(random_bytes(32));
+            $logMessage = sprintf(
+                "[%s] PASSWORD RESET SIMULATION for %s: Reset link http://localhost:8000/reset-password?token=%s\n",
+                date('Y-m-d H:i:s'),
+                $email,
+                $token
+            );
+            $logFile = defined('LOG_FILE') ? (string) LOG_FILE : __DIR__ . '/../../logs/error.log';
+            error_log($logMessage, 3, $logFile);
             return true;
         }
         return false;

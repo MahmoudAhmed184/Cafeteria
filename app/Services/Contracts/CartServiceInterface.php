@@ -11,4 +11,5 @@ interface CartServiceInterface
     public function clearCart(): void;
     public function validateCart(): bool;
     public function calculateTotal(): float;
+    public function placeOrder(int $userId, string $roomNo, ?string $notes): int;
 }

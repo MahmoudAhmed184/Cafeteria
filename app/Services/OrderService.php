@@ -60,6 +60,18 @@ class OrderService implements OrderServiceInterface
         return $this->orderItemModel->getByOrderId($orderId);
     }
 
+    public function getOrderById(int $orderId): ?array
+    {
+        $order = $this->orderModel->findById($orderId);
+        return $order ?: null;
+    }
+
+    public function countUserOrders(int $userId, ?string $dateFrom, ?string $dateTo): int
+    {
+        return $this->orderModel->countUserOrders($userId, $dateFrom, $dateTo);
+    }
+
+
     public function cancelOrder(int $orderId, int $userId): bool
     {
         $order = $this->orderModel->findById($orderId);
@@ -73,10 +85,16 @@ class OrderService implements OrderServiceInterface
 
     public function updateOrderStatus(int $orderId, string $status): bool
     {
-        $allowedStatuses = ['Processing', 'Out for Delivery', 'Done', 'Cancelled'];
-        if (in_array($status, $allowedStatuses, true)) {
-            return $this->orderModel->updateStatus($orderId, $status);
-        }
-        return false;
+        return $this->orderModel->updateStatus($orderId, $status);
+    }
+
+    public function getSpendingSummary(?string $dateFrom, ?string $dateTo, ?int $userId = null): array
+    {
+        return $this->orderModel->getSpendingSummary($dateFrom, $dateTo, $userId);
+    }
+
+    public function getOrdersInRange(int $userId, ?string $dateFrom, ?string $dateTo): array
+    {
+        return $this->orderModel->getOrdersInRange($userId, $dateFrom, $dateTo);
     }
 }
