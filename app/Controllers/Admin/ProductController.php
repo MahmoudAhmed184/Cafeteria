@@ -84,6 +84,7 @@ class ProductController extends BaseController
     {
         $this->ensureAdmin();
         $this->productService->toggleAvailability($id);
+        $_SESSION['success'] = 'Product availability toggled successfully.';
         header('Location: /admin/products');
         exit;
     }
@@ -91,7 +92,12 @@ class ProductController extends BaseController
     public function delete(int $id): void
     {
         $this->ensureAdmin();
-        $this->productService->deleteProduct($id);
+        try {
+            $this->productService->deleteProduct($id);
+            $_SESSION['success'] = 'Product deleted successfully.';
+        } catch (\Exception $e) {
+            $_SESSION['error'] = 'Failed to delete product: ' . $e->getMessage();
+        }
         header('Location: /admin/products');
         exit;
     }

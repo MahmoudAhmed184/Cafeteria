@@ -5,7 +5,9 @@ namespace App\Controllers\Admin;
 use App\Services\Contracts\UserServiceInterface;
 use App\Models\Room;
 
-class UserController
+use App\Controllers\BaseController;
+
+class UserController extends BaseController
 {
     private UserServiceInterface $userService;
     private Room $roomModel;
@@ -18,12 +20,14 @@ class UserController
 
     public function index(): void
     {
+        $this->ensureAdmin();
         $users = $this->userService->getAllUsers();
         require_once __DIR__ . '/../../Views/admin/users/index.php';
     }
 
     public function create(): void
     {
+        $this->ensureAdmin();
         $rooms = $this->roomModel->fetchAll();
         require_once __DIR__ . '/../../Views/admin/users/form.php';
     }
@@ -94,7 +98,13 @@ class UserController
 
     public function delete(int $id): void
     {
-        $this->userService->deleteOrDeactivateUser($id);
+        $this->ensureAdmin();
+        try {
+            $this->userService->deleteOrDeactivateUser($id);
+            $_SESSION['success'] = 'User deleted/deactivated successfully.';
+        } catch (\Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+        }
         header('Location: /admin/users');
         exit;
     }
