@@ -92,4 +92,40 @@ class User
         );
         return $statement->execute(['id' => $id]);
     }
+
+    public function delete(int $id): bool
+    {
+        $stmt = $this->connection->prepare('DELETE FROM users WHERE id = :id AND is_active = 1');
+        return $stmt->execute(['id' => $id]);
+    }
+
+
+    public function searchActiveUsers(string $term): array
+    {
+        $query = '%' . $term . '%';
+        $sql = 'SELECT id, name, email, room_no, ext
+                FROM users
+                WHERE is_active = 1
+                  AND role_id = 2
+                  AND (name LIKE ? OR email LIKE ?)
+                ORDER BY name ASC
+                LIMIT 20';
+        $statement = $this->connection->prepare($sql);
+        $statement->execute([$query, $query]);
+
+        return $statement->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function isActiveUser(int $userId): bool
+    {
+        $statement = $this->connection->prepare(
+            'SELECT id FROM users WHERE id = :user_id AND is_active = 1 AND role_id = 2 LIMIT 1'
+        );
+        $statement->execute(['user_id' => $userId]);
+
+        return (bool) $statement->fetchColumn();
+    }
+
 }
+
+

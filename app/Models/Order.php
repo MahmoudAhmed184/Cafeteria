@@ -74,4 +74,82 @@ class Order
         $statement = $this->connection->prepare('UPDATE orders SET status = :status WHERE id = :id');
         return $statement->execute(['status' => $status, 'id' => $id]);
     }
+
+
+    public function getSpendingSummary(?string $dateFrom, ?string $dateTo, ?int $userId = null): array
+    {
+        $sql = "SELECT u.id, u.name, SUM(o.total_amount) as total_spent
+                FROM users u
+                JOIN orders o ON u.id = o.user_id
+                WHERE o.status != 'Cancelled'";
+        $params = [];
+
+        if ($dateFrom) {
+            $sql .= " AND DATE(o.created_at) >= :date_from";
+            $params['date_from'] = $dateFrom;
+        }
+
+        if ($dateTo) {
+            $sql .= " AND DATE(o.created_at) <= :date_to";
+            $params['date_to'] = $dateTo;
+        }
+
+        if ($userId) {
+            $sql .= " AND u.id = :user_id";
+            $params['user_id'] = $userId;
+        }
+
+        $sql .= " GROUP BY u.id, u.name ORDER BY total_spent DESC";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getOrdersInRange(int $userId, ?string $dateFrom, ?string $dateTo): array
+    {
+        $sql = "SELECT id, created_at, total_amount
+                FROM orders
+                WHERE user_id = :user_id AND status != 'Cancelled'";
+        $params = ['user_id' => $userId];
+
+        if ($dateFrom) {
+            $sql .= " AND DATE(created_at) >= :date_from";
+            $params['date_from'] = $dateFrom;
+        }
+
+        if ($dateTo) {
+            $sql .= " AND DATE(created_at) <= :date_to";
+            $params['date_to'] = $dateTo;
+        }
+
+        $sql .= " ORDER BY created_at DESC";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    public function countUserOrders(int $userId, ?string $dateFrom, ?string $dateTo): int
+    {
+        $sql = 'SELECT COUNT(*) FROM orders WHERE user_id = :user_id';
+        $params = ['user_id' => $userId];
+
+        if ($dateFrom) {
+            $sql .= ' AND DATE(created_at) >= :date_from';
+            $params['date_from'] = $dateFrom;
+        }
+
+        if ($dateTo) {
+            $sql .= ' AND DATE(created_at) <= :date_to';
+            $params['date_to'] = $dateTo;
+        }
+
+        $statement = $this->connection->prepare($sql);
+        $statement->execute($params);
+        return (int) $statement->fetchColumn();
+    }
+
 }
+

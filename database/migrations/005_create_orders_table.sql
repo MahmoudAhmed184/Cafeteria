@@ -7,6 +7,7 @@ CREATE TABLE orders (
     status ENUM('Processing','Out for Delivery','Done','Cancelled') NOT NULL DEFAULT 'Processing',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (room_no) REFERENCES rooms(room_number) ON DELETE RESTRICT ON UPDATE CASCADE,
     INDEX idx_orders_user_id (user_id),
     INDEX idx_orders_status (status),
     INDEX idx_orders_created_at (created_at)
