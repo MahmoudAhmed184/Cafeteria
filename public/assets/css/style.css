@@ -135,6 +135,20 @@ body {
     color: var(--color-text-muted);
 }
 
+.header-nav-link {
+    font-size: var(--text-sm);
+    color: var(--color-text);
+    text-decoration: none;
+    padding: var(--space-1) var(--space-2);
+    border-radius: 0.25rem;
+    transition: color 0.15s, background-color 0.15s;
+}
+
+.header-nav-link:hover {
+    color: var(--color-primary);
+    background-color: var(--color-background);
+}
+
 /* Sidebar */
 .admin-sidebar {
     width: var(--sidebar-width);
