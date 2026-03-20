@@ -43,11 +43,10 @@ It digitizes product browsing, cart management, ordering, admin product/user man
 5. Run database migrations and seeders using your team’s migration scripts (for example a custom CLI script such as `php cli/migrate.php` and `php cli/seed.php`).
 6. Point your web server’s document root to `Cafeteria/public` and enable URL rewriting so all requests go through the front controller.
 
-For quick local testing you can also use PHP’s built‑in server from the `public` directory:
+For quick local testing you can also use PHP’s built‑in server from the project root directory:
 
 ```bash
-cd public
-php -S localhost:8000
+php -S localhost:8000 -t public/
 ```
 
 Then open `http://localhost:8000` in your browser.
@@ -68,4 +67,3 @@ See `docs/deployment.md` for full details. At a high level:
 4. Run migrations and seeders.
 5. Point your web server (Apache/Nginx) to `public/` and enable URL rewriting.
 6. Disable `display_errors` and enable error logging to a file (for example `storage/logs/error.log`).
-
