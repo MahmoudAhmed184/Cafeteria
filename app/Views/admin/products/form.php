@@ -13,18 +13,21 @@ ob_start();
 ?>
 <div class="product-form-page">
     <h1 class="admin-page-title"><?= $isEdit ? 'Edit product' : 'Add product' ?></h1>
-    <form id="product-form" class="card product-form" method="post" action="<?= $e($formAction) ?>" enctype="multipart/form-data">
+    <form id="product-form" class="card product-form" method="post" action="<?= $e($formAction) ?>"
+        enctype="multipart/form-data">
         <input type="hidden" name="csrf_token" value="<?= $e($csrfToken ?? '') ?>">
         <?php if ($isEdit): ?>
-        <input type="hidden" name="id" value="<?= (int)($product['id'] ?? 0) ?>">
+            <input type="hidden" name="id" value="<?= (int) ($product['id'] ?? 0) ?>">
         <?php endif; ?>
         <div class="form-group">
             <label class="form-label" for="name">Product name <span class="required">*</span></label>
-            <input type="text" id="name" name="name" class="form-control" value="<?= $e($product['name'] ?? '') ?>" required>
+            <input type="text" id="name" name="name" class="form-control" value="<?= $e($product['name'] ?? '') ?>"
+                required>
         </div>
         <div class="form-group">
             <label class="form-label" for="price">Price (EGP) <span class="required">*</span></label>
-            <input type="number" id="price" name="price" class="form-control" step="0.01" min="0.01" value="<?= $e($product['price'] ?? '') ?>" required>
+            <input type="number" id="price" name="price" class="form-control" step="0.01" min="0.01"
+                value="<?= $e($product['price'] ?? '') ?>" required>
         </div>
         <div class="form-group">
             <label class="form-label" for="category_id">Category <span class="required">*</span></label>
@@ -32,18 +35,22 @@ ob_start();
                 <select id="category_id" name="category_id" class="form-control" required>
                     <option value="">Select category</option>
                     <?php foreach ($categories as $c): ?>
-                    <option value="<?= (int)$c['id'] ?>" <?= (isset($product['category_id']) && (int)$product['category_id'] === (int)$c['id']) ? 'selected' : '' ?>><?= $e($c['name']) ?></option>
+                        <option value="<?= (int) $c['id'] ?>" <?= (isset($product['category_id']) && (int) $product['category_id'] === (int) $c['id']) ? 'selected' : '' ?>><?= $e($c['name']) ?>
+                        </option>
                     <?php endforeach; ?>
                 </select>
-                <button type="button" class="btn btn-outline" id="add-category-btn" aria-controls="add-category-modal">Add category</button>
+                <button type="button" class="btn btn-outline" id="add-category-btn"
+                    aria-controls="add-category-modal">Add category</button>
             </div>
         </div>
         <div class="form-group">
-            <label class="form-label" for="image">Product image <?= $isEdit ? '(leave empty to keep current)' : '<span class="required">*</span>' ?></label>
-            <input type="file" id="image" name="image" class="form-control" accept="image/jpeg,image/png,image/gif,image/webp" <?= $isEdit ? '' : 'required' ?>>
+            <label class="form-label" for="image">Product image
+                <?= $isEdit ? '(leave empty to keep current)' : '<span class="required">*</span>' ?></label>
+            <input type="file" id="image" name="image" class="form-control"
+                accept="image/jpeg,image/png,image/gif,image/webp" <?= $isEdit ? '' : 'required' ?>>
             <div id="image-preview" class="image-preview" aria-live="polite"></div>
             <?php if ($isEdit && !empty($product['image'])): ?>
-            <p class="form-hint">Current: <?= $e($product['image']) ?></p>
+                <p class="form-hint">Current: <?= $e($product['image']) ?></p>
             <?php endif; ?>
         </div>
         <div class="form-actions">
@@ -53,7 +60,8 @@ ob_start();
     </form>
 </div>
 
-<div id="add-category-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="add-category-title" hidden>
+<div id="add-category-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="add-category-title"
+    hidden>
     <div class="modal">
         <h2 id="add-category-title" class="card-title">Add category</h2>
         <form id="add-category-form">
@@ -69,7 +77,7 @@ ob_start();
     </div>
 </div>
 
-<script src="<?= defined('BASE_URL') ? rtrim(BASE_URL, '/') . '/' : '' ?>assets/js/admin/products.js"></script>
+<script src="/assets/js/admin/products.js?v=<?= time() ?>"></script>
 <?php
 $content = ob_get_clean();
 $showSidebar = true;
