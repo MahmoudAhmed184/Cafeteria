@@ -56,11 +56,15 @@ ob_start();
                     $statusBadge = match($status) {
                         'Processing'       => 'bg-tertiary-fixed text-on-tertiary-fixed',
                         'Out for delivery' => 'bg-secondary-container text-on-secondary-container',
+                        'Done'             => 'bg-primary text-on-primary',
+                        'Cancelled'        => 'bg-error text-on-error',
                         default            => 'bg-surface-container-high text-on-surface-variant',
                     };
                     $statusDot = match($status) {
                         'Processing'       => 'bg-tertiary',
                         'Out for delivery' => 'bg-secondary',
+                        'Done'             => 'bg-on-primary',
+                        'Cancelled'        => 'bg-on-error',
                         default            => 'bg-outline',
                     };
                 ?>
@@ -108,7 +112,7 @@ ob_start();
                                 <div class="flex items-center gap-4 bg-surface-container-lowest p-3 rounded-xl shadow-sm border border-outline-variant/5 min-w-[180px]">
                                     <div class="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container-highest">
                                         <?php if (!empty($item['image'])): ?>
-                                        <img src="<?= $e($item['image']) ?>" alt="<?= $e($item['name'] ?? '') ?>" class="w-full h-full object-cover">
+                                        <img src="<?= $e($item['image']) ?>" alt="<?= $e($item['product_name'] ?? '') ?>" class="w-full h-full object-cover">
                                         <?php else: ?>
                                         <div class="w-full h-full flex items-center justify-center">
                                             <span class="material-symbols-outlined text-outline">coffee</span>
@@ -117,7 +121,7 @@ ob_start();
                                         <div class="absolute inset-0 bg-primary/10"></div>
                                     </div>
                                     <div>
-                                        <h4 class="font-bold text-primary text-sm"><?= $e($item['name'] ?? '') ?></h4>
+                                        <h4 class="font-bold text-primary text-sm"><?= $e($item['product_name'] ?? '') ?></h4>
                                         <p class="text-xs text-secondary font-medium">Quantity: <?= (int)($item['quantity'] ?? 0) ?></p>
                                     </div>
                                 </div>
