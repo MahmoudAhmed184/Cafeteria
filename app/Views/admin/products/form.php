@@ -17,8 +17,6 @@ ob_start();
     <!-- Breadcrumb / Header -->
     <header class="mb-12">
         <div class="flex items-center gap-2 text-on-surface-variant mb-2">
-            <span class="text-sm font-medium">Inventory</span>
-            <span class="material-symbols-outlined text-sm">chevron_right</span>
             <span class="text-sm font-medium">Products</span>
         </div>
         <h1 class="text-5xl font-extrabold font-headline tracking-tight text-primary">
