@@ -10,42 +10,15 @@ $csrfToken = function_exists('csrf_token') ? csrf_token() : '';
 $active_page = 'users';
 ob_start();
 ?>
-<main class="max-w-[1440px] mx-auto px-8 py-12 flex gap-12">
-    <!-- Sidebar Context -->
-    <aside class="hidden lg:flex flex-col w-64 shrink-0">
-        <div class="mb-8">
-            <h3 class="font-headline font-black text-primary text-xl tracking-tight">Artisan Admin</h3>
-            <p class="text-secondary text-xs uppercase tracking-widest font-bold opacity-70">Maître D' System</p>
-        </div>
-        <nav class="flex flex-col gap-2">
-            <a href="<?= defined('BASE_URL') ? BASE_URL . '/admin/users' : '/admin/users' ?>"
-                class="flex items-center gap-3 bg-[#faf9f5] text-[#33210d] font-bold rounded-l-full pl-4 py-3 shadow-[12px_0_32px_rgba(41,24,6,0.04)] translate-x-1">
-                <span class="material-symbols-outlined">group</span>
-                <span class="font-headline text-sm">Staff</span>
-            </a>
-            <a href="<?= defined('BASE_URL') ? BASE_URL . '/admin/products' : '/admin/products' ?>"
-                class="flex items-center gap-3 text-[#4B3621] hover:bg-[#faf9f5]/50 hover:translate-x-1 transition-all rounded-l-full pl-4 py-3">
-                <span class="material-symbols-outlined">inventory_2</span>
-                <span class="font-headline text-sm font-semibold">Inventory</span>
-            </a>
-        </nav>
-    </aside>
-
-    <!-- Main Content -->
-    <section class="flex-1">
-        <div class="mb-10">
-            <nav class="flex gap-2 text-secondary text-xs font-semibold uppercase tracking-widest mb-2 opacity-60">
-                <span>Users</span>
-                <span>/</span>
-                <span>Management</span>
-            </nav>
-            <h1 class="text-4xl font-extrabold text-primary tracking-tighter font-headline mb-2">
-                <?= $isEdit ? 'Edit User' : 'Add User' ?>
-            </h1>
-            <p class="text-on-surface-variant font-body">
-                <?= $isEdit ? 'Update staff member details.' : 'Onboard a new corporate staff member to the system.' ?>
-            </p>
-        </div>
+<main class="max-w-5xl mx-auto px-8 py-12">
+    <div class="mb-10">
+        <h1 class="text-4xl font-extrabold text-primary tracking-tighter font-headline mb-2">
+            <?= $isEdit ? 'Edit User' : 'Add User' ?>
+        </h1>
+        <p class="text-on-surface-variant font-body">
+            <?= $isEdit ? 'Update staff member details.' : 'Onboard a new corporate staff member to the system.' ?>
+        </p>
+    </div>
 
         <div class="bg-surface-container-low rounded-xl p-8 max-w-3xl">
             <form method="post"
@@ -183,7 +156,6 @@ ob_start();
                 </div>
             </form>
         </div>
-    </section>
 </main>
 <?php
 $content = ob_get_clean();
