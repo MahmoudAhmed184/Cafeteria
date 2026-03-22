@@ -19,6 +19,12 @@ class AdminOrderController extends BaseController
     {
         $this->ensureAdmin();
         $orders = $this->orderService->getAllProcessingOrders();
+
+        foreach ($orders as &$order) {
+            $order['items'] = $this->orderService->getOrderItems((int)$order['id']);
+        }
+        unset($order);
+
         require_once __DIR__ . '/../../Views/admin/orders.php';
     }
 

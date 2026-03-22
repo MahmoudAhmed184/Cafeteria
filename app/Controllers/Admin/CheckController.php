@@ -30,10 +30,21 @@ class CheckController extends BaseController
         $usersList = $this->userModel->fetchAll();
         $summary = $this->checkService->getUserSpendingSummary($dateFrom, $dateTo, $userId);
 
-        foreach ($usersList as &$user) {
-            $user['order_count'] = $this->orderService->countUserOrders((int) $user['id'], $dateFrom, $dateTo);
+        foreach ($summary as &$row) {
+            $rowUserId = (int)$row['id'];
+            $row['order_count'] = $this->orderService->countUserOrders($rowUserId, $dateFrom, $dateTo);
+
+            $orders = $this->checkService->getUserOrdersInRange($rowUserId, $dateFrom, $dateTo);
+            foreach ($orders as &$ord) {
+                $ord['order_total'] = $ord['total_amount'];
+                $ord['items'] = $this->checkService->getOrderDetails((int)$ord['id']);
+            }
+            unset($ord);
+
+            $row['orders'] = $orders;
         }
-        
+        unset($row);
+
         require_once __DIR__ . '/../../Views/admin/checks.php';
     }
 
@@ -43,7 +54,7 @@ class CheckController extends BaseController
         $dateTo = filter_input(INPUT_GET, 'date_to', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         $orders = $this->checkService->getUserOrdersInRange($userId, $dateFrom, $dateTo);
-        
+
         header('Content-Type: application/json');
         echo json_encode($orders);
         exit;
@@ -52,7 +63,7 @@ class CheckController extends BaseController
     public function orderItems(int $orderId): void
     {
         $items = $this->checkService->getOrderDetails($orderId);
-        
+
         header('Content-Type: application/json');
         echo json_encode($items);
         exit;
