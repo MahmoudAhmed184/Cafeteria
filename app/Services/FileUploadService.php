@@ -11,7 +11,7 @@ class FileUploadService
 
     public function __construct(string $uploadRoot = null)
     {
-        $this->uploadRoot = $uploadRoot ?? __DIR__ . '/../../uploads/';
+        $this->uploadRoot = $uploadRoot ?? __DIR__ . '/../../public/uploads/';
         $this->maxSize = defined('UPLOAD_MAX_SIZE') ? (int)UPLOAD_MAX_SIZE : 2 * 1024 * 1024;
     }
 
@@ -48,6 +48,6 @@ class FileUploadService
             throw new Exception("Failed to move uploaded file.");
         }
 
-        return $filename;
+        return trim($subDir, '/') . '/' . $filename;
     }
 }
