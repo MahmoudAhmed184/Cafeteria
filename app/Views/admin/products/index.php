@@ -6,11 +6,11 @@ $e = static fn($value) => htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8')
 $active_page = 'products';
 ob_start();
 ?>
-<main class="px-6 py-8">
-    <header class="flex justify-between items-baseline mb-6">
+<main class="max-w-[1400px] mx-auto px-8 py-10">
+    <header class="flex items-end justify-between mb-12">
         <div>
-            <h1 class="font-headline text-5xl font-extrabold tracking-tighter text-primary">All Products</h1>
-            <p class="text-on-surface-variant mt-2 font-medium">Manage your cafeteria's premium catalog</p>
+            <h1 class="font-headline text-5xl font-extrabold text-primary tracking-tight mb-2">All Products</h1>
+            <p class="text-secondary font-medium mt-2">Manage your cafeteria's premium catalog</p>
         </div>
         <a href="<?= defined('BASE_URL') ? BASE_URL . '/admin/products/create' : '/admin/products/create' ?>"
             class="flex items-center gap-2 px-6 py-3 bg-tertiary-fixed text-on-tertiary-fixed font-bold rounded-lg hover:translate-y-[-2px] transition-all duration-200 shadow-sm active:opacity-80">
@@ -20,7 +20,7 @@ ob_start();
     </header>
 
     <!-- Product Table -->
-    <div class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_16px_rgba(41,24,6,0.06)] overflow-hidden border border-outline-variant/20">
+    <div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0px_12px_32px_rgba(41,24,6,0.04)] border border-outline-variant/10">
         <table class="w-full text-left border-collapse table-fixed">
             <thead class="bg-surface-container-low text-on-surface-variant text-xs font-semibold tracking-wider uppercase border-b border-outline-variant/20">
                 <tr>
