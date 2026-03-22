@@ -176,5 +176,15 @@
         attachValidation('.auth-form');
         attachValidation('#confirm-order-form');
         attachValidation('#product-form');
+
+        // Auto-dismiss existing toasts rendered from PHP session
+        var existingToasts = document.querySelectorAll('.toast-container .toast');
+        existingToasts.forEach(function(toast) {
+            setTimeout(function() {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 4000);
+        });
     });
 })();
