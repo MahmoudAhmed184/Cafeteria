@@ -55,7 +55,7 @@ ob_start();
                         <div class="flex justify-center">
                             <div class="w-12 h-12 rounded-lg overflow-hidden bg-surface-container flex-shrink-0">
                                 <?php if (!empty($product['image'])): ?>
-                                <img src="<?= $e($product['image']) ?>" alt="<?= $e($product['name'] ?? '') ?>"
+                                <img src="<?= (strpos($product['image'] ?? '', 'http') === 0) ? $product['image'] : '/uploads/' . $product['image'] ?>" alt="<?= $e($product['name'] ?? '') ?>"
                                     class="w-full h-full object-cover">
                                 <?php else: ?>
                                 <div class="w-full h-full flex items-center justify-center">

@@ -2,10 +2,11 @@
 
 $categories = isset($categories) && is_array($categories) ? $categories : [];
 $product = $product ?? null;
-$isEdit = !empty($product);
-$e = function ($s) {
-    return htmlspecialchars((string) $s, ENT_QUOTES, 'UTF-8');
-};
+$product = isset($product) && is_array($product) ? $product : [];
+$errors = isset($errors) && is_array($errors) ? $errors : [];
+$isEdit = !empty($product['id']);
+$e = static fn($value) => htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+$baseUrl = defined('BASE_URL') ? BASE_URL : '';
 $formAction = $isEdit
     ? (defined('BASE_URL') ? BASE_URL . '/admin/products/update' : '/admin/products/update')
     : (defined('BASE_URL') ? BASE_URL . '/admin/products/store' : '/admin/products/store');
@@ -100,11 +101,19 @@ ob_start();
                         <div class="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-lg border-2 border-dashed border-outline-variant/50">
                             <div id="image-preview" class="image-preview shrink-0" aria-live="polite">
                                 <?php if ($isEdit && !empty($product['image'])): ?>
-                                <img src="<?= $e($product['image']) ?>" alt="Current product" class="w-16 h-16 object-cover rounded-lg">
+                                    <div class="flex flex-col gap-2">
+                                        <p class="text-xs text-on-surface-variant font-body opacity-70">Current: 
+                                            <span class="font-mono"><?= $e($product['image']) ?></span>
+                                        </p>
+                                        <div class="w-16 h-16 rounded-lg overflow-hidden border border-outline-variant/20 shadow-sm">
+                                            <img src="<?= (strpos($product['image'] ?? '', 'http') === 0) ? $product['image'] : '/uploads/' . $product['image'] ?>" 
+                                                 class="w-full h-full object-cover" alt="Current product image">
+                                        </div>
+                                    </div>
                                 <?php else: ?>
-                                <div class="w-16 h-16 rounded-full bg-surface-container overflow-hidden flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-outline-variant text-3xl">photo_camera</span>
-                                </div>
+                                    <div class="w-16 h-16 rounded-full bg-surface-container overflow-hidden flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-outline-variant text-3xl">photo_camera</span>
+                                    </div>
                                 <?php endif; ?>
                             </div>
                             <div class="flex flex-col flex-1">
