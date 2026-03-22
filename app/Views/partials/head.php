@@ -126,5 +126,9 @@
     .primary-gradient {
       background: linear-gradient(135deg, #33210d 0%, #4b3621 100%);
     }
+
+    [hidden] {
+      display: none !important;
+    }
   </style>
 </head>
