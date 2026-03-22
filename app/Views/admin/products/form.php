@@ -39,21 +39,27 @@ ob_start();
                 <div class="space-y-6">
                     <!-- Product Name -->
                     <div class="flex flex-col gap-2">
-                        <label class="font-headline font-bold text-primary tracking-tight" for="name">Product</label>
+                        <label class="text-sm font-bold text-primary font-headline flex items-center gap-2" for="name">
+                            <span class="material-symbols-outlined text-sm">inventory_2</span>
+                            Product
+                        </label>
                         <input type="text" id="name" name="name" required
                             value="<?= $e($product['name'] ?? '') ?>"
-                            class="w-full bg-surface-container-low border-none rounded-lg p-4 focus:ring-2 focus:ring-tertiary-fixed-dim focus:bg-surface-container-lowest transition-all duration-200 font-body text-on-surface"
+                            class="bg-surface-container-lowest border-none ring-1 ring-outline-variant/30 focus:ring-2 focus:ring-secondary/50 rounded-lg p-3 text-on-surface placeholder:text-outline transition-all font-body"
                             placeholder="Enter product name (e.g. Arabica Roast)">
                     </div>
 
                     <!-- Price -->
                     <div class="flex flex-col gap-2">
-                        <label class="font-headline font-bold text-primary tracking-tight" for="price">Price</label>
-                        <div class="relative flex items-center bg-surface-container-low rounded-lg focus-within:ring-2 focus-within:ring-tertiary-fixed-dim transition-all">
+                        <label class="text-sm font-bold text-primary font-headline flex items-center gap-2" for="price">
+                            <span class="material-symbols-outlined text-sm">payments</span>
+                            Price
+                        </label>
+                        <div class="relative flex items-center bg-surface-container-lowest ring-1 ring-outline-variant/30 rounded-lg focus-within:ring-2 focus-within:ring-secondary/50 transition-all">
                             <span class="pl-4 pr-2 text-secondary font-label font-semibold">EGP</span>
                             <input type="number" id="price" name="price" step="0.01" min="0.01" required
                                 value="<?= $e($product['price'] ?? '') ?>"
-                                class="flex-1 bg-transparent border-none p-4 text-primary font-headline text-xl font-bold focus:ring-0"
+                                class="flex-1 bg-transparent border-none p-3 text-on-surface font-body focus:ring-0"
                                 placeholder="0.00">
                         </div>
                     </div>
@@ -61,15 +67,18 @@ ob_start();
                     <!-- Category -->
                     <div class="flex flex-col gap-2">
                         <div class="flex justify-between items-end">
-                            <label class="font-headline font-bold text-primary tracking-tight" for="category_id">Category</label>
+                            <label class="text-sm font-bold text-primary font-headline flex items-center gap-2" for="category_id">
+                                <span class="material-symbols-outlined text-sm">category</span>
+                                Category
+                            </label>
                             <button type="button" id="add-category-btn" aria-controls="add-category-modal"
-                                class="text-on-tertiary-container font-headline font-bold text-sm flex items-center gap-1 hover:underline">
-                                <span class="material-symbols-outlined text-sm">add</span> Add Category
+                                class="text-on-tertiary-container font-headline font-bold text-xs flex items-center gap-1 hover:underline mb-1">
+                                <span class="material-symbols-outlined text-xs">add</span> Add Category
                             </button>
                         </div>
                         <div class="relative">
                             <select id="category_id" name="category_id" required
-                                class="w-full bg-surface-container-low border-none rounded-lg p-4 appearance-none focus:ring-2 focus:ring-tertiary-fixed-dim font-body text-on-surface pr-10 !bg-none">
+                                class="w-full bg-surface-container-lowest border-none ring-1 ring-outline-variant/30 focus:ring-2 focus:ring-secondary/50 rounded-lg p-3 text-on-surface transition-all font-body appearance-none !bg-none pr-10">
                                 <option value="">Select category</option>
                                 <?php foreach ($categories as $c): ?>
                                 <option value="<?= (int)$c['id'] ?>"
@@ -84,28 +93,43 @@ ob_start();
 
                     <!-- Product Image -->
                     <div class="flex flex-col gap-2">
-                        <label class="font-headline font-bold text-primary tracking-tight" for="image">
-                            Product image <?= $isEdit ? '(leave empty to keep current)' : '<span class="text-error">*</span>' ?>
+                        <label class="text-sm font-bold text-primary font-headline flex items-center gap-2" for="image">
+                            <span class="material-symbols-outlined text-sm">image</span>
+                            Product image <?= $isEdit ? '(leave empty)' : '<span class="text-error">*</span>' ?>
                         </label>
-                        <input type="file" id="image" name="image"
-                            class="w-full bg-surface-container-low border-none rounded-lg p-4 font-body text-on-surface"
-                            accept="image/jpeg,image/png,image/gif,image/webp"
-                            <?= $isEdit ? '' : 'required' ?>>
-                        <div id="image-preview" class="image-preview" aria-live="polite"></div>
-                        <?php if ($isEdit && !empty($product['image'])): ?>
-                        <p class="text-sm text-on-surface-variant">Current: <?= $e($product['image']) ?></p>
-                        <?php endif; ?>
+                        <div class="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-lg border-2 border-dashed border-outline-variant/50">
+                            <div id="image-preview" class="image-preview shrink-0" aria-live="polite">
+                                <?php if ($isEdit && !empty($product['image'])): ?>
+                                <img src="<?= $e($product['image']) ?>" alt="Current product" class="w-16 h-16 object-cover rounded-lg">
+                                <?php else: ?>
+                                <div class="w-16 h-16 rounded-full bg-surface-container overflow-hidden flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-outline-variant text-3xl">photo_camera</span>
+                                </div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="flex flex-col flex-1">
+                                <p class="text-xs text-on-surface-variant font-medium mb-2">Upload a high-resolution image. Max 2MB.</p>
+                                <label class="cursor-pointer inline-flex items-center justify-center px-4 py-2 bg-surface-container-highest text-primary font-headline font-bold text-xs rounded-lg hover:bg-surface-container-high transition-all w-fit">
+                                    Browse
+                                    <input type="file" id="image" name="image"
+                                        accept="image/jpeg,image/png,image/gif,image/webp"
+                                        <?= $isEdit ? '' : 'required' ?> class="hidden">
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Action Buttons -->
                 <div class="flex items-center gap-4 pt-6 mt-6 border-t border-outline-variant/20">
                     <button type="submit"
-                        class="bg-primary-gradient text-on-primary px-10 py-4 rounded-lg font-headline font-bold tracking-tight active:scale-95 transition-all shadow-lg shadow-primary/20">
+                        class="flex-1 md:flex-none px-10 py-3 bg-gradient-to-br from-primary to-primary-container text-white font-headline font-bold rounded-lg shadow-md hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-sm">save</span>
                         <?= $isEdit ? 'Save Changes' : 'Save Product' ?>
                     </button>
                     <button type="reset"
-                        class="bg-surface-container-highest text-on-surface px-10 py-4 rounded-lg font-headline font-bold tracking-tight hover:bg-surface-dim active:scale-95 transition-all">
+                        class="flex-1 md:flex-none px-10 py-3 bg-transparent border border-outline-variant text-primary font-headline font-bold rounded-lg hover:bg-surface-container-high transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-sm">restart_alt</span>
                         Reset
                     </button>
                     <a href="<?= defined('BASE_URL') ? BASE_URL . '/admin/products' : '/admin/products' ?>"
@@ -141,17 +165,26 @@ ob_start();
     aria-labelledby="add-category-title" hidden
     style="position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:100;">
     <div class="bg-surface-container-lowest rounded-xl p-8 max-w-sm w-full mx-4 shadow-2xl">
-        <h2 id="add-category-title" class="font-headline text-xl font-bold text-primary mb-6">Add category</h2>
+        <h2 id="add-category-title" class="font-headline text-2xl font-black text-primary mb-6 italic tracking-tight">Add category</h2>
         <form id="add-category-form">
-            <div class="flex flex-col gap-2 mb-4">
-                <label class="font-headline font-bold text-primary text-sm" for="new_category_name">Category name</label>
+            <div class="flex flex-col gap-2 mb-6">
+                <label class="text-sm font-bold text-primary font-headline flex items-center gap-2" for="new_category_name">
+                    <span class="material-symbols-outlined text-sm">label_important</span>
+                    Category name
+                </label>
                 <input type="text" id="new_category_name"
-                    class="bg-surface-container-low border-none rounded-lg p-3 text-on-surface focus:ring-2 focus:ring-tertiary-fixed-dim"
+                    class="bg-surface-container-lowest border-none ring-1 ring-outline-variant/30 focus:ring-2 focus:ring-secondary/50 rounded-lg p-3 text-on-surface placeholder:text-outline transition-all font-body uppercase text-sm tracking-wider font-bold"
+                    placeholder="E.G. HOT DRINKS"
                     required>
             </div>
-            <div class="flex items-center gap-3">
-                <button type="submit" class="bg-primary-gradient text-on-primary px-6 py-2 rounded-lg font-bold">Add</button>
-                <button type="button" id="add-category-cancel" class="text-primary font-bold hover:underline">Cancel</button>
+            <div class="flex items-center gap-3 pt-4 border-t border-outline-variant/10">
+                <button type="submit" class="flex-1 px-6 py-2.5 bg-gradient-to-br from-primary to-primary-container text-white font-headline font-bold rounded-lg shadow-sm hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-sm">add</span>
+                    Add
+                </button>
+                <button type="button" id="add-category-cancel" class="flex-1 px-6 py-2.5 bg-transparent border border-outline-variant text-primary font-headline font-bold rounded-lg hover:bg-surface-container-high transition-all">
+                    Cancel
+                </button>
             </div>
         </form>
     </div>
