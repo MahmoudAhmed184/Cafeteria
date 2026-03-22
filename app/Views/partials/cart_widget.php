@@ -1,50 +1,70 @@
 <?php
 
 $cart = $cart ?? [];
+$grandTotal = $grandTotal ?? 0;
+$e = function ($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); };
 ?>
-<div class="cart-widget" id="cart-widget" aria-label="Shopping cart">
-    <h3 class="cart-widget-title">Cart</h3>
-    <div class="cart-widget-body" id="cart-widget-body">
-        <?php if (empty($cart)): ?>
-        <p class="cart-empty" id="cart-empty-msg">Your cart is empty.</p>
-        <?php
-else: ?>
-        <ul class="cart-items" id="cart-items-list">
-            <?php foreach ($cart as $item): ?>
-            <li class="cart-item" data-product-id="<?=(int)($item['product_id'] ?? 0)?>">
-                <div class="cart-item-info">
-                    <span class="cart-item-name">
-                        <?= htmlspecialchars($item['name'] ?? '', ENT_QUOTES, 'UTF-8')?>
-                    </span>
-                    <span class="cart-item-price">
-                        <?= htmlspecialchars(number_format($item['price'] ?? 0, 2), ENT_QUOTES, 'UTF-8')?> EGP
-                    </span>
-                </div>
-                <div class="cart-item-controls">
-                    <button type="button" class="btn btn-sm cart-qty-btn cart-qty-minus"
-                        data-product-id="<?=(int)($item['product_id'] ?? 0)?>"
-                        data-qty="<?=(int)($item['quantity'] ?? 0)?>" title="Decrease quantity">−</button>
-                    <span class="cart-item-qty">
-                        <?=(int)($item['quantity'] ?? 0)?>
-                    </span>
-                    <button type="button" class="btn btn-sm cart-qty-btn cart-qty-plus"
-                        data-product-id="<?=(int)($item['product_id'] ?? 0)?>"
-                        data-qty="<?=(int)($item['quantity'] ?? 0)?>" title="Increase quantity">+</button>
-                    <span class="cart-item-total">
-                        <?= htmlspecialchars(number_format($item['line_total'] ?? 0, 2), ENT_QUOTES, 'UTF-8')?> EGP
-                    </span>
-                    <button type="button" class="btn btn-sm cart-remove-btn"
-                        data-product-id="<?=(int)($item['product_id'] ?? 0)?>" title="Remove item">✕</button>
-                </div>
-            </li>
-            <?php
-    endforeach; ?>
-        </ul>
-        <p class="cart-grand-total">Total: <strong id="cart-grand-total">
-                <?= htmlspecialchars(number_format($grandTotal ?? 0, 2), ENT_QUOTES, 'UTF-8')?> EGP
-            </strong></p>
-        <button type="button" class="btn btn-sm btn-outline" id="cart-clear-btn">Clear Cart</button>
-        <?php
-endif; ?>
+<div class="flex items-center justify-between mb-6">
+    <h2 class="text-xl font-extrabold text-primary tracking-tight flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary">shopping_bag</span>
+        Your Order
+    </h2>
+    <span class="bg-tertiary-container/10 text-on-tertiary-container px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Draft</span>
+</div>
+<!-- Cart Items -->
+<div class="space-y-4 mb-6" id="cart-items-list">
+    <?php if (empty($cart)): ?>
+    <p class="text-on-surface-variant text-sm text-center py-4" id="cart-empty-msg">Your cart is empty.</p>
+    <?php else: ?>
+    <?php foreach ($cart as $item): ?>
+    <div class="flex items-center justify-between group pb-4 border-b border-outline-variant/10" data-product-id="<?= (int)($item['product_id'] ?? 0) ?>">
+        <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-surface-container rounded-lg overflow-hidden flex-shrink-0">
+                <?php if (!empty($item['image'])): ?>
+                <img src="<?= $e($item['image']) ?>" alt="" class="w-full h-full object-cover">
+                <?php else: ?>
+                <span class="material-symbols-outlined text-secondary-fixed-dim w-full h-full flex items-center justify-center">coffee</span>
+                <?php endif; ?>
+            </div>
+            <div>
+                <p class="font-bold text-on-surface"><?= $e($item['name'] ?? '') ?></p>
+                <p class="text-xs text-on-surface-variant">EGP <?= $e(number_format((float)($item['price'] ?? 0), 2)) ?></p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="flex items-center bg-surface-container-low rounded-lg p-1">
+                <button type="button"
+                    class="w-6 h-6 flex items-center justify-center hover:bg-surface-container-high rounded transition-all text-primary cart-qty-btn cart-qty-minus"
+                    data-product-id="<?= (int)($item['product_id'] ?? 0) ?>"
+                    data-qty="<?= (int)($item['quantity'] ?? 0) ?>"
+                    title="Decrease quantity">
+                    <span class="material-symbols-outlined text-sm">remove</span>
+                </button>
+                <span class="px-2 font-bold text-sm min-w-[20px] text-center cart-item-qty"><?= (int)($item['quantity'] ?? 0) ?></span>
+                <button type="button"
+                    class="w-6 h-6 flex items-center justify-center hover:bg-surface-container-high rounded transition-all text-primary cart-qty-btn cart-qty-plus"
+                    data-product-id="<?= (int)($item['product_id'] ?? 0) ?>"
+                    data-qty="<?= (int)($item['quantity'] ?? 0) ?>"
+                    title="Increase quantity">
+                    <span class="material-symbols-outlined text-sm">add</span>
+                </button>
+            </div>
+            <button type="button"
+                class="text-error/40 hover:text-error transition-colors cart-remove-btn"
+                data-product-id="<?= (int)($item['product_id'] ?? 0) ?>"
+                title="Remove item">
+                <span class="material-symbols-outlined text-lg">close</span>
+            </button>
+        </div>
+    </div>
+    <?php endforeach; ?>
+    <?php endif; ?>
+</div>
+<!-- Grand Total -->
+<div class="flex justify-between items-end pt-4 mt-4 border-t border-outline-variant/20">
+    <span class="text-sm font-medium text-on-surface-variant">Grand Total</span>
+    <div class="text-right">
+        <span class="text-sm font-semibold text-secondary mr-1">EGP</span>
+        <span class="text-3xl font-black text-primary" id="cart-grand-total"><?= $e(number_format((float)$grandTotal, 2)) ?></span>
     </div>
 </div>

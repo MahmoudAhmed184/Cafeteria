@@ -6,10 +6,10 @@
     Object.keys(payload).forEach(function (key) {
       formData.append(key, payload[key]);
     });
-    // Append CSRF token if present in meta tag
+
     var csrfMeta = document.querySelector('meta[name="csrf-token"]');
-    if (csrfMeta && !formData.has('csrf_token')) {
-        formData.append('csrf_token', csrfMeta.content);
+    if (csrfMeta && !formData.has("csrf_token")) {
+      formData.append("csrf_token", csrfMeta.content);
     }
     return formData;
   }
@@ -58,7 +58,6 @@
     },
   };
 
-  /* ---- Add to cart buttons ---- */
   document.addEventListener("click", function (e) {
     var btn = e.target.closest(".add-to-cart-btn");
     if (!btn) return;
@@ -67,8 +66,9 @@
     var productId = btn.getAttribute("data-product-id");
     if (!productId) return;
 
-    var oldText = btn.textContent;
-    btn.textContent = "Adding...";
+    var oldHtml = btn.innerHTML;
+    btn.innerHTML =
+      '<span class="material-symbols-outlined text-sm">hourglass_top</span>';
     btn.disabled = true;
 
     window.cartApi
@@ -82,7 +82,7 @@
         }, 500);
       })
       .catch(function (err) {
-        btn.textContent = oldText;
+        btn.innerHTML = oldHtml;
         btn.disabled = false;
         var msg =
           err && err.data && err.data.message
@@ -94,7 +94,6 @@
       });
   });
 
-  /* ---- Quantity +/- buttons ---- */
   document.addEventListener("click", function (e) {
     var plusBtn = e.target.closest(".cart-qty-plus");
     var minusBtn = e.target.closest(".cart-qty-minus");
@@ -139,7 +138,6 @@
     }
   });
 
-  /* ---- Remove item button ---- */
   document.addEventListener("click", function (e) {
     var btn = e.target.closest(".cart-remove-btn");
     if (!btn) return;
@@ -168,7 +166,6 @@
       });
   });
 
-  /* ---- Clear cart button ---- */
   document.addEventListener("click", function (e) {
     var btn = e.target.closest("#cart-clear-btn");
     if (!btn) return;
@@ -191,7 +188,6 @@
       });
   });
 
-  /* ---- Confirm order form (AJAX POST) ---- */
   document.addEventListener("DOMContentLoaded", function () {
     var form = document.getElementById("confirm-order-form");
     if (!form) return;
