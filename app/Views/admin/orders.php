@@ -11,7 +11,7 @@ ob_start();
     <div class="flex items-end justify-between mb-12">
         <div>
             <h1 class="font-headline text-5xl font-extrabold text-primary tracking-tight mb-2">Orders</h1>
-            <p class="text-secondary font-medium italic">Monitoring active incoming requests in real-time</p>
+            <p class="text-secondary font-medium">Monitoring active incoming requests in real-time</p>
         </div>
         <div class="flex gap-4">
             <div class="bg-surface-container-low px-4 py-2 rounded shadow-sm flex items-center gap-2 border border-outline-variant/15">

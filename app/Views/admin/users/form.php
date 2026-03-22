@@ -15,9 +15,6 @@ ob_start();
         <h1 class="text-4xl font-extrabold text-primary tracking-tighter font-headline mb-2">
             <?= $isEdit ? 'Edit User' : 'Add User' ?>
         </h1>
-        <p class="text-on-surface-variant font-body">
-            <?= $isEdit ? 'Update staff member details.' : 'Onboard a new corporate staff member to the system.' ?>
-        </p>
     </div>
 
         <div class="bg-surface-container-low rounded-xl p-8 max-w-3xl">
