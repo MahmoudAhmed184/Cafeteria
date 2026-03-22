@@ -74,7 +74,17 @@
         var toast = document.createElement('div');
         toast.className = 'toast toast-' + (type === 'success' ? 'success' : 'error');
         toast.setAttribute('role', 'alert');
-        toast.textContent = message;
+        
+        var icon = document.createElement('span');
+        icon.className = 'material-symbols-outlined text-xl';
+        icon.textContent = type === 'success' ? 'check_circle' : 'error';
+        icon.style.color = type === 'success' ? '#2e7d32' : '#d32f2f';
+        
+        var text = document.createElement('span');
+        text.textContent = message;
+        
+        toast.appendChild(icon);
+        toast.appendChild(text);
         container.appendChild(toast);
         setTimeout(function () {
             if (toast.parentNode) {
