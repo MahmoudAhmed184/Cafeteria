@@ -19,7 +19,7 @@ endforeach; ?>
 <div class="relative" id="user-profile-dropdown-wrapper">
 <button type="button" id="user-profile-toggle" class="flex items-center gap-3 bg-surface-container-low px-4 py-2 rounded-full cursor-pointer hover:bg-surface-container transition-all">
 <span class="text-sm font-bold text-primary"><?= htmlspecialchars($_SESSION['user_name'] ?? 'User')?></span>
-<img alt="User Profile Avatar" class="w-8 h-8 rounded-full border border-outline-variant" src="<?= htmlspecialchars($_SESSION['profile_pic'] ?? 'https://ui-avatars.com/api/?name=' . urlencode($_SESSION['user_name'] ?? 'U') . '&background=e3e2df&color=33210d') ?>"/>
+<img alt="User Profile Avatar" class="w-8 h-8 rounded-full border border-outline-variant" src="<?= !empty($_SESSION['profile_pic']) ? ( (strpos($_SESSION['profile_pic'], 'http') === 0) ? $_SESSION['profile_pic'] : '/uploads/' . $_SESSION['profile_pic'] ) : 'https://ui-avatars.com/api/?name=' . urlencode($_SESSION['user_name'] ?? 'U') . '&background=e3e2df&color=33210d' ?>"/>
 </button>
 <div id="user-profile-menu" class="hidden absolute right-0 top-full mt-2 w-48 bg-surface-container-lowest rounded-xl shadow-[0px_12px_32px_rgba(41,24,6,0.12)] border border-outline-variant/20 py-2 z-50">
 <div class="px-4 py-3 border-b border-outline-variant/10">

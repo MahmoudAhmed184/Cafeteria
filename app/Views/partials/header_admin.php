@@ -40,7 +40,7 @@ endforeach; ?>
                   </p>
                </div>
                <img alt="Admin Profile Avatar" class="w-10 h-10 rounded-full border-2 border-primary/10"
-                  src="<?= htmlspecialchars($_SESSION['profile_pic'] ?? 'https://ui-avatars.com/api/?name=' . urlencode($_SESSION['user_name'] ?? 'A') . '&background=e3e2df&color=33210d')?>" />
+                  src="<?= !empty($_SESSION['profile_pic']) ? ( (strpos($_SESSION['profile_pic'], 'http') === 0) ? $_SESSION['profile_pic'] : '/uploads/' . $_SESSION['profile_pic'] ) : 'https://ui-avatars.com/api/?name=' . urlencode($_SESSION['user_name'] ?? 'A') . '&background=e3e2df&color=33210d' ?>" />
             </button>
             <div id="admin-profile-menu"
                class="hidden absolute right-0 top-full mt-2 w-48 bg-surface-container-lowest rounded-xl shadow-[0px_12px_32px_rgba(41,24,6,0.12)] border border-outline-variant/20 py-2 z-50">

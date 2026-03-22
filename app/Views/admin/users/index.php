@@ -43,7 +43,7 @@ ob_start();
                 <tr class="<?= $i % 2 === 1 ? 'bg-surface-container/30' : '' ?> hover:bg-surface-container-highest/40 transition-colors">
                     <td class="px-8 py-4">
                         <?php if (!empty($user['profile_pic'])): ?>
-                        <img class="w-10 h-10 rounded-full object-cover" src="<?= $e($user['profile_pic']) ?>" alt="<?= $e($user['name'] ?? '') ?>">
+                        <img class="w-10 h-10 rounded-full object-cover" src="<?= (strpos($user['profile_pic'] ?? '', 'http') === 0) ? $user['profile_pic'] : '/uploads/' . $user['profile_pic'] ?>" alt="<?= $e($user['name'] ?? '') ?>">
                         <?php else: ?>
                         <div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center">
                             <span class="material-symbols-outlined text-outline text-sm">person</span>

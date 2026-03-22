@@ -118,7 +118,7 @@ ob_start();
                         <div class="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-lg border-2 border-dashed border-outline-variant/50">
                             <div class="w-16 h-16 rounded-full bg-surface-container overflow-hidden flex items-center justify-center shrink-0">
                                 <?php if ($isEdit && !empty($user['profile_pic'])): ?>
-                                <img src="<?= $e($user['profile_pic']) ?>" alt="Current profile" class="w-full h-full object-cover">
+                                <img src="<?= (strpos($user['profile_pic'] ?? '', 'http') === 0) ? $user['profile_pic'] : '/uploads/' . $user['profile_pic'] ?>" alt="Current profile" class="w-full h-full object-cover">
                                 <?php else: ?>
                                 <span class="material-symbols-outlined text-outline-variant text-3xl">account_circle</span>
                                 <?php endif; ?>
