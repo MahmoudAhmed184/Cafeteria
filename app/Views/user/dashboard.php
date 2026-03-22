@@ -74,7 +74,7 @@ ob_start();
                 <div class="bg-surface-container-lowest rounded-lg overflow-hidden border border-outline-variant/10 hover:translate-y-[-4px] transition-transform duration-300 cursor-pointer group flex flex-col h-[260px] w-full relative product-card"
                     data-product-name="<?= $e($p['name']) ?>">
                     <div class="p-2 h-44 flex items-center justify-center">
-                        <img src="<?= $e($p['image'] ?? '') ?>" alt="<?= $e($p['name']) ?>" class="w-full h-full object-cover rounded-xl" width="200" height="200">
+                        <img src="<?= (strpos($p['image'] ?? '', 'http') === 0) ? $p['image'] : '/uploads/' . $p['image'] ?>" alt="<?= $e($p['name']) ?>" class="w-full h-full object-cover rounded-xl" width="200" height="200">
                     </div>
                     <div class="px-4 pb-4 flex-grow flex flex-col justify-between">
                         <div class="mt-1">

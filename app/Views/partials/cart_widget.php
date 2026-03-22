@@ -21,7 +21,7 @@ $e = function ($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
         <div class="flex items-center gap-3">
             <div class="w-12 h-12 bg-surface-container rounded-lg overflow-hidden flex-shrink-0">
                 <?php if (!empty($item['image'])): ?>
-                <img src="<?= $e($item['image']) ?>" alt="" class="w-full h-full object-cover">
+                <img src="<?= (strpos($item['image'] ?? '', 'http') === 0) ? $item['image'] : '/uploads/' . $item['image'] ?>" alt="" class="w-full h-full object-cover">
                 <?php else: ?>
                 <span class="material-symbols-outlined text-secondary-fixed-dim w-full h-full flex items-center justify-center">coffee</span>
                 <?php endif; ?>

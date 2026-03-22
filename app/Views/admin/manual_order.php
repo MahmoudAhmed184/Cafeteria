@@ -92,7 +92,7 @@ ob_start();
             <div class="group bg-surface-container-lowest p-2 rounded-lg hover:shadow-xl hover:shadow-primary/5 transition-all cursor-pointer product-card"
                 data-product-name="<?= $e($p['name']) ?>">
                 <div class="relative aspect-square rounded-xl overflow-hidden mb-4">
-                    <img src="<?= $e($p['image'] ?? '') ?>" alt="<?= $e($p['name']) ?>"
+                    <img src="<?= (strpos($p['image'] ?? '', 'http') === 0) ? $p['image'] : '/uploads/' . $p['image'] ?>" alt="<?= $e($p['name']) ?>"
                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4">
                         <span class="bg-white/90 text-primary text-xs font-black uppercase px-4 py-2 rounded-full shadow-lg">Quick Add +</span>

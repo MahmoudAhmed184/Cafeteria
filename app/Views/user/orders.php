@@ -112,7 +112,7 @@ ob_start();
                                 <div class="flex items-center gap-4 bg-surface-container-lowest p-3 rounded-xl shadow-sm border border-outline-variant/5 min-w-[180px]">
                                     <div class="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container-highest">
                                         <?php if (!empty($item['image'])): ?>
-                                        <img src="<?= $e($item['image']) ?>" alt="<?= $e($item['product_name'] ?? '') ?>" class="w-full h-full object-cover">
+                                        <img src="<?= (strpos($item['image'] ?? '', 'http') === 0) ? $item['image'] : '/uploads/' . $item['image'] ?>" alt="<?= $e($item['product_name'] ?? '') ?>" class="w-full h-full object-cover">
                                         <?php else: ?>
                                         <div class="w-full h-full flex items-center justify-center">
                                             <span class="material-symbols-outlined text-outline">coffee</span>

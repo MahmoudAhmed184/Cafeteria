@@ -17,7 +17,7 @@ $e = function ($s) {
         <div
             class="flex-shrink-0 flex items-center gap-4 bg-surface-container-lowest p-4 rounded-lg border border-outline-variant/10 w-64 h-24 hover:shadow-md transition-shadow cursor-pointer">
             <?php if (!empty($item['image'])): ?>
-            <img src="<?= $e($item['image'])?>" alt="<?= $e($item['name'] ?? '')?>"
+            <img src="<?= (strpos($item['image'] ?? '', 'http') === 0) ? $item['image'] : '/uploads/' . $item['image'] ?>" alt="<?= $e($item['name'] ?? '')?>"
                 class="w-16 h-16 rounded-lg object-cover flex-shrink-0">
             <?php
             else: ?>

@@ -139,7 +139,7 @@ ob_start();
                                             <div class="flex gap-4 p-3 rounded-xl bg-surface-container-lowest shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-outline-variant/10 hover:shadow-md transition-shadow">
                                                 <div class="w-16 h-16 shrink-0 bg-surface-container-low rounded-lg overflow-hidden flex items-center justify-center">
                                                     <?php if(!empty($item['image'])): ?>
-                                                    <img src="<?= $e($item['image']) ?>" alt="<?= $e($item['product_name'] ?? $item['name'] ?? '') ?>" class="w-full h-full object-cover" />
+                                                    <img src="<?= (strpos($item['image'] ?? '', 'http') === 0) ? $item['image'] : '/uploads/' . $item['image'] ?>" alt="<?= $e($item['product_name'] ?? $item['name'] ?? '') ?>" class="w-full h-full object-cover" />
                                                     <?php else: ?>
                                                     <span class="material-symbols-outlined text-outline">local_cafe</span>
                                                     <?php endif; ?>

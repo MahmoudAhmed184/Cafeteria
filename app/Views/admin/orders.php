@@ -76,7 +76,7 @@ ob_start();
                     <div class="min-w-[140px] flex flex-col gap-3 group">
                         <div class="relative w-full aspect-square bg-surface-container rounded-xl overflow-hidden">
                             <?php if (!empty($item['image'])): ?>
-                            <img src="<?= $e($item['image']) ?>" alt="<?= $e($item['name'] ?? '') ?>"
+                            <img src="<?= (strpos($item['image'] ?? '', 'http') === 0) ? $item['image'] : '/uploads/' . $item['image'] ?>" alt="<?= $e($item['name'] ?? '') ?>"
                                 class="w-full h-full object-cover transition-transform group-hover:scale-110">
                             <?php else: ?>
                             <div class="w-full h-full flex items-center justify-center">
