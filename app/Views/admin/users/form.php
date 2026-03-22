@@ -112,8 +112,9 @@ ob_start();
                             <span class="material-symbols-outlined text-sm">door_front</span>
                             Room No.
                         </label>
-                        <select id="room_no" name="room_no" required
-                            class="bg-surface-container-lowest border-none ring-1 ring-outline-variant/30 focus:ring-2 focus:ring-secondary/50 rounded-lg p-3 text-on-surface transition-all font-body">
+                        <div class="relative">
+                            <select id="room_no" name="room_no" required
+                                class="w-full bg-surface-container-lowest border-none ring-1 ring-outline-variant/30 focus:ring-2 focus:ring-secondary/50 rounded-lg p-3 text-on-surface transition-all font-body appearance-none !bg-none pr-10">
                             <option value="">Select Room</option>
                             <?php foreach ($rooms as $r): ?>
                             <option value="<?= $e($r['room_number']) ?>"
@@ -121,7 +122,9 @@ ob_start();
                                 <?= $e($r['room_number']) ?>
                             </option>
                             <?php endforeach; ?>
-                        </select>
+                            </select>
+                            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-outline">unfold_more</span>
+                        </div>
                     </div>
 
                     <!-- Ext -->

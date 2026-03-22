@@ -37,7 +37,7 @@ ob_start();
             <div class="relative">
                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">person</span>
                 <select id="user_id" name="user_id"
-                    class="w-full bg-surface-container-low border-none rounded-lg py-4 pl-12 pr-4 text-on-surface focus:ring-2 focus:ring-tertiary-fixed transition-all outline-none appearance-none">
+                    class="w-full bg-surface-container-low border-none rounded-lg py-4 pl-12 pr-10 text-on-surface focus:ring-2 focus:ring-tertiary-fixed transition-all outline-none appearance-none !bg-none">
                     <option value="">All users</option>
                     <?php foreach ($usersList as $user): ?>
                     <option value="<?= (int)($user['id'] ?? 0) ?>"
@@ -46,6 +46,7 @@ ob_start();
                     </option>
                     <?php endforeach; ?>
                 </select>
+                <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-outline">unfold_more</span>
             </div>
         </div>
         <div class="flex flex-col justify-end">

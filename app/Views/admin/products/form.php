@@ -69,7 +69,7 @@ ob_start();
                         </div>
                         <div class="relative">
                             <select id="category_id" name="category_id" required
-                                class="w-full bg-surface-container-low border-none rounded-lg p-4 appearance-none focus:ring-2 focus:ring-tertiary-fixed-dim font-body text-on-surface pr-10">
+                                class="w-full bg-surface-container-low border-none rounded-lg p-4 appearance-none focus:ring-2 focus:ring-tertiary-fixed-dim font-body text-on-surface pr-10 !bg-none">
                                 <option value="">Select category</option>
                                 <?php foreach ($categories as $c): ?>
                                 <option value="<?= (int)$c['id'] ?>"
