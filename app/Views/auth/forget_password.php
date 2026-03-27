@@ -1,4 +1,4 @@
-<?php /* Frontend Polish Pass: updated labels to Title Case and focus rings to brand colors */
+<?php
 $page_title = 'Forgot Password';
 $e = static fn($value) => htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 $csrfValue = function_exists('csrf_token') ? csrf_token() : '';
@@ -22,7 +22,8 @@ ob_start();
                 <label class="block text-sm font-medium text-on-surface" for="email">Email</label>
                 <input
                     class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg py-2.5 px-3.5 text-sm text-on-surface font-body focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all duration-150"
-                    id="email" name="email" placeholder="username@corporate.com" type="email" required autocomplete="email" />
+                    id="email" name="email" placeholder="username@corporate.com" type="email" required
+                    autocomplete="email" />
             </div>
             <button type="submit"
                 class="w-full bg-primary text-on-primary font-body font-semibold py-2.5 rounded-lg hover:bg-primary-container active:scale-[0.99] transition-all duration-150 text-sm">
