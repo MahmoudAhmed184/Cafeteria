@@ -2,30 +2,37 @@
 
 namespace App;
 
-class Router {
+class Router
+{
     private array $routes = [];
     private static ?Router $instance = null;
 
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
-    public static function create(): Router {
+    public static function create(): Router
+    {
         if (self::$instance === null) {
             self::$instance = new static();
         }
         return self::$instance;
     }
 
-    public function get(string $url, callable $action): self {
+    public function get(string $url, callable $action): self
+    {
         $this->add('GET', $url, $action);
         return $this;
     }
 
-    public function post(string $url, callable $action): self {
+    public function post(string $url, callable $action): self
+    {
         $this->add('POST', $url, $action);
         return $this;
     }
 
-    public function route(string $method, string $url): void {
+    public function route(string $method, string $url): void
+    {
         $route = $this->findRoute($method, $url);
         if ($route) {
             call_user_func($route['action']);
@@ -35,7 +42,8 @@ class Router {
         }
     }
 
-    private function add(string $method, string $url, callable $action): void {
+    private function add(string $method, string $url, callable $action): void
+    {
         $this->routes[] = [
             'method' => $method,
             'url' => $url,
@@ -43,7 +51,8 @@ class Router {
         ];
     }
 
-    private function findRoute(string $method, string $url): ?array {
+    private function findRoute(string $method, string $url): ?array
+    {
         foreach ($this->routes as $route) {
             if ($route['method'] === $method && $route['url'] === $url) {
                 return $route;

@@ -1,15 +1,6 @@
-/**
- * Global JS utilities - Cafeteria Management System
- * AJAX helpers, CSRF token injection (NFR-SEC-009)
- */
-
 (function () {
     'use strict';
 
-    /**
-     * Get CSRF token from meta tag or hidden input
-     * @returns {string}
-     */
     function getCsrfToken() {
         var meta = document.querySelector('meta[name="csrf-token"]');
         if (meta && meta.getAttribute('content')) {
@@ -19,12 +10,6 @@
         return input ? input.value : '';
     }
 
-    /**
-     * AJAX request with CSRF and JSON support
-     * @param {string} url
-     * @param {Object} options - fetch options (method, body, headers, etc.)
-     * @returns {Promise<Object>} parsed JSON or throws on non-ok
-     */
     window.ajax = function (url, options) {
         options = options || {};
         var method = (options.method || 'GET').toUpperCase();
@@ -63,26 +48,21 @@
         });
     };
 
-    /**
-     * Show toast notification (targets #toast-container)
-     * @param {string} type - 'success' or 'error'
-     * @param {string} message
-     */
     window.showToast = function (type, message) {
         var container = document.getElementById('toast-container');
         if (!container) return;
         var toast = document.createElement('div');
         toast.className = 'toast toast-' + (type === 'success' ? 'success' : 'error');
         toast.setAttribute('role', 'alert');
-        
+
         var icon = document.createElement('span');
         icon.className = 'material-symbols-outlined text-xl';
         icon.textContent = type === 'success' ? 'check_circle' : 'error';
         icon.style.color = type === 'success' ? '#2e7d32' : '#d32f2f';
-        
+
         var text = document.createElement('span');
         text.textContent = message;
-        
+
         toast.appendChild(icon);
         toast.appendChild(text);
         container.appendChild(toast);
@@ -93,9 +73,6 @@
         }, 4000);
     };
 
-    /**
-     * Basic client-side form validation helpers (task 9.2)
-     */
     function validateForm(form) {
         if (!form) return true;
         var firstInvalid = null;
@@ -106,7 +83,6 @@
             }
         });
 
-        // Custom rules per-form
         if (form.classList.contains('auth-form')) {
             var email = form.querySelector('#email');
             var password = form.querySelector('#password');
@@ -147,7 +123,6 @@
             }
         }
 
-        // reportValidity() triggers native UI tooltips even with novalidate
         if (!form.reportValidity()) {
             elements.forEach(function (el) {
                 if (el.willValidate && !el.validity.valid && !firstInvalid) {
@@ -177,10 +152,9 @@
         attachValidation('#confirm-order-form');
         attachValidation('#product-form');
 
-        // Auto-dismiss existing toasts rendered from PHP session
         var existingToasts = document.querySelectorAll('.toast-container .toast');
-        existingToasts.forEach(function(toast) {
-            setTimeout(function() {
+        existingToasts.forEach(function (toast) {
+            setTimeout(function () {
                 if (toast.parentNode) {
                     toast.parentNode.removeChild(toast);
                 }

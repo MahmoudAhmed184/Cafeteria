@@ -1,7 +1,3 @@
-/**
- * Product search / filter - client-side filtering by product name (FR-CART-002)
- * Targets #product-search and #products-grid with .product-card[data-product-name]
- */
 (function () {
     'use strict';
 
@@ -12,7 +8,6 @@
 
     var cards = productsGrid.querySelectorAll('.product-card');
     var noMatchId = 'products-no-match';
-    var noMatchEl = document.getElementById(noMatchId);
 
     function ensureNoMatchMessage() {
         if (!document.getElementById(noMatchId)) {

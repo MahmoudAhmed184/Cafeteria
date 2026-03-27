@@ -6,7 +6,6 @@ if (!defined('APP_ROOT')) {
     define('APP_ROOT', dirname(__DIR__));
 }
 
-// Load environment variables from .env file
 $envFile = APP_ROOT . '/.env';
 if (file_exists($envFile)) {
     $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -43,7 +42,6 @@ session_set_cookie_params([
 ini_set('session.use_strict_mode', '1');
 
 if (session_status() === PHP_SESSION_NONE) {
-    // Configure Error Logging (NFR-REL-003)
     $logFile = defined('LOG_FILE') ? (string) LOG_FILE : __DIR__ . '/../logs/error.log';
     if (!is_dir(dirname($logFile))) {
         mkdir(dirname($logFile), 0755, true);
@@ -72,7 +70,6 @@ if ($baseUrl !== '' && str_starts_with($uri, $baseUrl)) {
 
 if (in_array($method, ['POST', 'PUT', 'DELETE'], true)) {
     $token = $_POST['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
-    // Special case for API/JSON endpoints where token might be in the raw body
     if (empty($token) && isset($_SERVER['CONTENT_TYPE']) && str_contains($_SERVER['CONTENT_TYPE'], 'application/json')) {
         $input = json_decode(file_get_contents('php://input'), true);
         if (is_array($input) && isset($input['csrf_token'])) {
@@ -80,7 +77,7 @@ if (in_array($method, ['POST', 'PUT', 'DELETE'], true)) {
         }
     }
     error_log("CSRF Debug: Method=$method, Token=" . ($token ?: 'MISSING') . ", SessionToken=" . ($_SESSION['_csrf_token'] ?? 'NONE'));
-    if (!verify_csrf_token((string)$token)) {
+    if (!verify_csrf_token((string) $token)) {
         error_log("CSRF FAILED: Verification failed for token $token");
         http_response_code(403);
         die('CSRF token validation failed');
