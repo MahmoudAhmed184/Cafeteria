@@ -1,4 +1,4 @@
-<?php /* Frontend Polish Pass: Title Case labels, updated focus rings, moved back button */
+<?php
 
 $categories = isset($categories) && is_array($categories) ? $categories : [];
 $product = $product ?? null;
@@ -18,7 +18,8 @@ ob_start();
     <header class="mb-8 flex justify-between items-start">
         <div>
             <div class="flex items-center gap-2 text-xs text-on-surface-variant mb-2">
-                <a href="<?= defined('BASE_URL') ? BASE_URL . '/admin/products' : '/admin/products' ?>" class="hover:text-primary transition-colors">Products</a>
+                <a href="<?= defined('BASE_URL') ? BASE_URL . '/admin/products' : '/admin/products' ?>"
+                    class="hover:text-primary transition-colors">Products</a>
                 <span>/</span>
                 <span><?= $isEdit ? 'Edit' : 'Add' ?></span>
             </div>
@@ -27,33 +28,32 @@ ob_start();
             </h1>
         </div>
         <a href="<?= defined('BASE_URL') ? BASE_URL . '/admin/products' : '/admin/products' ?>"
-            class="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors px-3 py-1.5 border border-outline-variant/30 rounded-lg hidden sm:block">Back to products</a>
+            class="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors px-3 py-1.5 border border-outline-variant/30 rounded-lg hidden sm:block">Back
+            to products</a>
     </header>
 
-    <form id="product-form" method="post" action="<?= $e($formAction) ?>"
-        enctype="multipart/form-data"
+    <form id="product-form" method="post" action="<?= $e($formAction) ?>" enctype="multipart/form-data"
         class="bg-surface-container-lowest rounded-lg border border-outline-variant/20 p-6 space-y-6">
         <input type="hidden" name="csrf_token" value="<?= $e(function_exists('csrf_token') ? csrf_token() : '') ?>">
         <?php if ($isEdit): ?>
-        <input type="hidden" name="id" value="<?= (int)($product['id'] ?? 0) ?>">
+            <input type="hidden" name="id" value="<?= (int) ($product['id'] ?? 0) ?>">
         <?php endif; ?>
 
         <?php if (!empty($errors)): ?>
-        <div class="p-3 bg-error-container/30 rounded-lg space-y-1">
-            <?php foreach ($errors as $err): ?>
-            <p class="text-sm text-error font-medium flex items-center gap-2">
-                <span class="material-symbols-outlined text-[16px]">error</span>
-                <?= $e(is_array($err) ? implode(', ', $err) : $err) ?>
-            </p>
-            <?php endforeach; ?>
-        </div>
+            <div class="p-3 bg-error-container/30 rounded-lg space-y-1">
+                <?php foreach ($errors as $err): ?>
+                    <p class="text-sm text-error font-medium flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[16px]">error</span>
+                        <?= $e(is_array($err) ? implode(', ', $err) : $err) ?>
+                    </p>
+                <?php endforeach; ?>
+            </div>
         <?php endif; ?>
 
         <!-- Name -->
         <div class="space-y-1.5">
             <label class="block text-sm font-medium text-on-surface" for="name">Product Name</label>
-            <input type="text" id="name" name="name" required
-                value="<?= $e($product['name'] ?? '') ?>"
+            <input type="text" id="name" name="name" required value="<?= $e($product['name'] ?? '') ?>"
                 class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg py-2.5 px-3.5 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition"
                 placeholder="e.g. Arabica Roast">
         </div>
@@ -77,37 +77,39 @@ ob_start();
                 </button>
             </div>
             <select id="category_id" name="category_id" required
-                    class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg py-2.5 px-3.5 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition custom-select">
-                    <option value="">Select category</option>
-                    <?php foreach ($categories as $c): ?>
-                    <option value="<?= (int)$c['id'] ?>"
-                        <?= (isset($product['category_id']) && (int)$product['category_id'] === (int)$c['id']) ? 'selected' : '' ?>>
+                class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg py-2.5 px-3.5 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition custom-select">
+                <option value="">Select category</option>
+                <?php foreach ($categories as $c): ?>
+                    <option value="<?= (int) $c['id'] ?>" <?= (isset($product['category_id']) && (int) $product['category_id'] === (int) $c['id']) ? 'selected' : '' ?>>
                         <?= $e($c['name']) ?>
                     </option>
-                    <?php endforeach; ?>
-                </select>
+                <?php endforeach; ?>
+            </select>
         </div>
 
         <!-- Image Upload -->
         <div class="space-y-1.5">
             <span class="block text-sm font-medium text-on-surface">
-                Product Image <?= $isEdit ? '<span class="text-xs text-on-surface-variant font-normal">(leave empty to keep current)</span>' : '' ?>
+                Product Image
+                <?= $isEdit ? '<span class="text-xs text-on-surface-variant font-normal">(leave empty to keep current)</span>' : '' ?>
             </span>
-            <div class="flex items-center gap-4 p-4 bg-surface-container-low rounded-lg border border-outline-variant/30 border-dashed file-upload-zone">
-                <div id="image-preview" class="w-14 h-14 rounded-lg overflow-hidden bg-surface-container flex items-center justify-center shrink-0">
+            <div
+                class="flex items-center gap-4 p-4 bg-surface-container-low rounded-lg border border-outline-variant/30 border-dashed file-upload-zone">
+                <div id="image-preview"
+                    class="w-14 h-14 rounded-lg overflow-hidden bg-surface-container flex items-center justify-center shrink-0">
                     <?php if ($isEdit && !empty($product['image'])): ?>
-                    <img src="<?= (strpos($product['image'] ?? '', 'http') === 0) ? $product['image'] : '/uploads/' . $product['image'] ?>"
-                        class="w-full h-full object-cover" alt="Current product image" loading="lazy">
+                        <img src="<?= (strpos($product['image'] ?? '', 'http') === 0) ? $product['image'] : '/uploads/' . $product['image'] ?>"
+                            class="w-full h-full object-cover" alt="Current product image" loading="lazy">
                     <?php else: ?>
-                    <span class="material-symbols-outlined text-on-surface-variant text-xl">photo_camera</span>
+                        <span class="material-symbols-outlined text-on-surface-variant text-xl">photo_camera</span>
                     <?php endif; ?>
                 </div>
                 <div class="flex flex-col flex-1">
                     <p class="text-xs text-on-surface-variant mb-2">JPG, PNG, GIF, or WebP. Max 2MB.</p>
-                    <label class="cursor-pointer inline-flex items-center justify-center px-4 py-2 bg-surface-container-highest text-sm font-medium text-on-surface rounded-md hover:bg-surface-container-high transition-all w-fit focus-within:ring-2 focus-within:ring-primary/20">
+                    <label
+                        class="cursor-pointer inline-flex items-center justify-center px-4 py-2 bg-surface-container-highest text-sm font-medium text-on-surface rounded-md hover:bg-surface-container-high transition-all w-fit focus-within:ring-2 focus-within:ring-primary/20">
                         Browse
-                        <input type="file" id="image" name="image"
-                            accept="image/jpeg,image/png,image/gif,image/webp"
+                        <input type="file" id="image" name="image" accept="image/jpeg,image/png,image/gif,image/webp"
                             <?= $isEdit ? '' : 'required' ?> class="sr-only">
                     </label>
                 </div>
@@ -131,9 +133,8 @@ ob_start();
 </div>
 
 <!-- Add Category Modal -->
-<div id="add-category-modal" class="modal-backdrop" role="dialog" aria-modal="true"
-    aria-labelledby="add-category-title" hidden
-    class="fixed inset-0 bg-black/30 flex items-center justify-center z-[100]">
+<div id="add-category-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="add-category-title"
+    hidden class="fixed inset-0 bg-black/30 flex items-center justify-center z-[100]">
     <div class="bg-white rounded-lg p-6 max-w-sm w-full mx-4 border border-outline-variant/20">
         <h2 id="add-category-title" class="text-lg font-semibold text-primary mb-4">Add Category</h2>
         <form id="add-category-form">
@@ -141,14 +142,15 @@ ob_start();
                 <label class="block text-sm font-medium text-on-surface" for="new_category_name">Category Name</label>
                 <input type="text" id="new_category_name"
                     class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg py-2.5 px-3.5 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition"
-                    placeholder="e.g. Hot Drinks"
-                    required>
+                    placeholder="e.g. Hot Drinks" required>
             </div>
             <div class="flex items-center gap-3">
-                <button type="submit" class="flex-1 px-4 py-2.5 bg-primary text-on-primary font-body font-semibold text-sm rounded-lg hover:bg-primary-container active:scale-[0.99] transition-all">
+                <button type="submit"
+                    class="flex-1 px-4 py-2.5 bg-primary text-on-primary font-body font-semibold text-sm rounded-lg hover:bg-primary-container active:scale-[0.99] transition-all">
                     Add
                 </button>
-                <button type="button" id="add-category-cancel" class="flex-1 px-4 py-2.5 border border-outline-variant/40 text-on-surface font-body font-medium text-sm rounded-lg hover:bg-surface-container-high transition-all">
+                <button type="button" id="add-category-cancel"
+                    class="flex-1 px-4 py-2.5 border border-outline-variant/40 text-on-surface font-body font-medium text-sm rounded-lg hover:bg-surface-container-high transition-all">
                     Cancel
                 </button>
             </div>
