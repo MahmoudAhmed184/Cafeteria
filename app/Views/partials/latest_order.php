@@ -8,17 +8,17 @@ $e = function ($s) {
 <?php if (!empty($latestOrder)): ?>
 <div class="mt-6">
     <div class="flex items-center gap-4 mb-6 mt-6">
-        <h2 class="text-xl font-extrabold text-primary tracking-tight">Latest Order</h2>
+        <h2 class="text-lg font-semibold text-primary">Latest Order</h2>
         <div class="h-px flex-grow bg-outline-variant/20"></div>
     </div>
     <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide" id="latest-order-widget" aria-label="Latest order">
         <?php if (!empty($latestOrder['items']) && is_array($latestOrder['items'])): ?>
         <?php foreach ($latestOrder['items'] as $item): ?>
         <div
-            class="flex-shrink-0 flex items-center gap-4 bg-surface-container-lowest p-4 rounded-lg border border-outline-variant/10 w-64 h-24 hover:shadow-md transition-shadow cursor-pointer">
+            class="flex-shrink-0 flex items-center gap-4 bg-surface-container-lowest p-4 rounded-lg border border-outline-variant/10 w-64 h-24 hover:border-outline-variant/40 transition-colors cursor-pointer">
             <?php if (!empty($item['image'])): ?>
-            <img src="<?= (strpos($item['image'] ?? '', 'http') === 0) ? $item['image'] : '/uploads/' . $item['image'] ?>" alt="<?= $e($item['name'] ?? '')?>"
-                class="w-16 h-16 rounded-lg object-cover flex-shrink-0">
+            <img src="<?=(strpos($item['image'] ?? '', 'http') === 0) ? $item['image'] : '/uploads/' . $item['image']?>"
+                alt="<?= $e($item['name'] ?? '')?>" class="w-16 h-16 rounded-lg object-cover flex-shrink-0">
             <?php
             else: ?>
             <div class="w-16 h-16 rounded-lg bg-surface-container-high flex items-center justify-center flex-shrink-0">
