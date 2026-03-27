@@ -1,0 +1,38 @@
+/* Added CSS custom properties token block */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --primary: #33210d;
+    --on-primary: #ffffff;
+    --primary-container: #4b3621;
+    --on-primary-container: #bd9f83;
+    --secondary: #79573f;
+    --on-secondary: #ffffff;
+    --secondary-container: #ffd1b3;
+    --on-secondary-container: #7a5840;
+    --error: #ba1a1a;
+    --on-error: #ffffff;
+    --error-container: #ffdad6;
+    --on-error-container: #93000a;
+    --background: #faf9f5;
+    --on-background: #1b1c1a;
+    --surface: #faf9f5;
+    --on-surface: #1b1c1a;
+    --on-surface-variant: #4e453d;
+    --outline: #80756c;
+    --outline-variant: #d2c4ba;
+    --surface-container-low: #f4f4f0;
+    --surface-container: #efeeea;
+    --surface-container-high: #e9e8e4;
+    --surface-dim: #dbdad6;
+    --inverse-surface: #2f312e;
+    --inverse-primary: #e1c1a4;
+    --tertiary-container: #f5deb3;
+    --on-tertiary-container: #312200;
+    --success: #16a34a;
+    --success-container: #dcfce7;
+  }
+}

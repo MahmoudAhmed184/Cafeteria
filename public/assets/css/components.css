@@ -1,0 +1,172 @@
+/* ==========================================================================
+   Components — Cafeteria Management System
+   Shared UI components: toasts, badges, buttons, form elements, tables, cards
+   [Frontend Polish Pass: updated slide animations and added standard components]
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Standardized UI Components Added During Polish Pass
+   -------------------------------------------------------------------------- */
+.btn-destructive {
+  border: 1px solid rgba(186, 26, 26, 0.4); /* error/40 */
+  color: #ba1a1a; /* error token */
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  background-color: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-destructive:hover {
+  background-color: rgba(255, 218, 214, 0.2); /* error-container/20 */
+}
+.btn-destructive:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(186, 26, 26, 0.3); /* error/30 ring */
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+.status-pill::before {
+  content: '';
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 9999px;
+}
+.status-pill-processing { background-color: #fffbeb; color: #b45309; }
+.status-pill-processing::before { background-color: #f59e0b; }
+.status-pill-done { background-color: #ecfdf5; color: #047857; }
+.status-pill-done::before { background-color: #10b981; }
+.status-pill-cancelled { background-color: #fef2f2; color: #b91c1c; }
+.status-pill-cancelled::before { background-color: #ef4444; }
+.status-pill-delivery { background-color: #f1f5f9; color: #475569; }
+.status-pill-delivery::before { background-color: #94a3b8; }
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.empty-state-icon {
+  font-size: 3rem;
+  color: #80756c;
+  margin-bottom: 0.75rem;
+}
+.empty-state-text {
+  color: #4e453d;
+  font-size: 0.875rem;
+}
+
+/* --------------------------------------------------------------------------
+   Toast Notifications
+   -------------------------------------------------------------------------- */
+.toast-container {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  min-width: 300px;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-left: 3px solid #33210d;
+  animation: toast-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1b1c1a;
+}
+
+.toast-success {
+  border-left-color: #16a34a;
+}
+
+.toast-error {
+  border-left-color: #dc2626;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Scrollbar utilities
+   -------------------------------------------------------------------------- */
+.no-scrollbar::-webkit-scrollbar,
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar,
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* --------------------------------------------------------------------------
+   Base resets used globally
+   -------------------------------------------------------------------------- */
+[hidden] {
+  display: none !important;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* --------------------------------------------------------------------------
+   Select Arrow Override — single custom chevron, cross-browser
+   -------------------------------------------------------------------------- */
+select.custom-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2380756c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1.25rem;
+  padding-right: 2.5rem;
+}
+
+select.custom-select::-ms-expand {
+  display: none;
+}
