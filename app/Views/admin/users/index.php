@@ -1,4 +1,4 @@
-<?php
+<?php /* Frontend Polish Pass: standardized destructive button, table row hover, empty state */
 
 $users = isset($users) && is_array($users) ? $users : [];
 $e = static fn($value) => htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
@@ -6,81 +6,97 @@ $e = static fn($value) => htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8')
 $active_page = 'users';
 ob_start();
 ?>
-<main class="max-w-[1440px] mx-auto px-8 py-10">
-    <!-- Header -->
-    <div class="flex justify-between items-baseline mb-12">
+<div class="max-w-[1400px] mx-auto px-6 lg:px-8 py-8">
+    <header class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
         <div>
-            <h1 class="font-headline text-5xl font-extrabold text-[#33210d] tracking-tight">All Users</h1>
-            <p class="text-secondary mt-2 font-medium">Manage employee access and department directories.</p>
+            <h1 class="text-2xl font-headline font-semibold text-primary">Users</h1>
+            <p class="text-sm text-on-surface-variant mt-1">Manage employee access and departments</p>
         </div>
         <a href="<?= defined('BASE_URL') ? BASE_URL . '/admin/users/create' : '/admin/users/create' ?>"
-            class="flex items-center gap-2 px-6 py-3 bg-tertiary-fixed text-on-tertiary-fixed font-bold rounded-lg hover:translate-y-[-2px] transition-all duration-200 shadow-sm active:opacity-80">
-            <span class="material-symbols-outlined text-sm">person_add</span>
+            class="inline-flex items-center gap-2 px-5 py-2.5 bg-secondary text-on-secondary font-body font-semibold text-sm rounded-lg hover:bg-secondary-container active:scale-[0.98] transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-secondary/30">
+            <span class="material-symbols-outlined text-[18px]">person_add</span>
             Add user
         </a>
-    </div>
+    </header>
 
-    <!-- Data Table -->
-    <div class="bg-surface-container-low rounded-xl overflow-hidden shadow-[0px_12px_32px_rgba(41,24,6,0.04)] border border-outline-variant/10">
-        <table class="w-full text-left border-collapse">
-            <thead>
-                <tr class="bg-surface-container-high/50 border-b border-outline-variant/20">
-                    <th class="px-8 py-5 font-headline font-bold text-[#4B3621] text-sm uppercase tracking-widest">Image</th>
-                    <th class="px-8 py-5 font-headline font-bold text-[#4B3621] text-sm uppercase tracking-widest">Name</th>
-                    <th class="px-8 py-5 font-headline font-bold text-[#4B3621] text-sm uppercase tracking-widest">Room</th>
-                    <th class="px-8 py-5 font-headline font-bold text-[#4B3621] text-sm uppercase tracking-widest">Ext.</th>
-                    <th class="px-8 py-5 font-headline font-bold text-[#4B3621] text-sm uppercase tracking-widest text-right">Action</th>
-                </tr>
-            </thead>
-            <tbody class="text-on-surface">
-                <?php if ($users === []): ?>
-                <tr>
-                    <td colspan="5" class="py-12 px-8 text-center text-on-surface-variant">No users found.</td>
-                </tr>
-                <?php else: ?>
-                <?php foreach ($users as $i => $user): ?>
-                <?php $userId = (int)($user['id'] ?? 0); ?>
-                <tr class="<?= $i % 2 === 1 ? 'bg-surface-container/30' : '' ?> hover:bg-surface-container-highest/40 transition-colors">
-                    <td class="px-8 py-4">
-                        <?php if (!empty($user['profile_pic'])): ?>
-                        <img class="w-10 h-10 rounded-full object-cover" src="<?= (strpos($user['profile_pic'] ?? '', 'http') === 0) ? $user['profile_pic'] : '/uploads/' . $user['profile_pic'] ?>" alt="<?= $e($user['name'] ?? '') ?>">
-                        <?php else: ?>
-                        <div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center">
-                            <span class="material-symbols-outlined text-outline text-sm">person</span>
-                        </div>
-                        <?php endif; ?>
-                    </td>
-                    <td class="px-8 py-4 font-semibold text-primary"><?= $e($user['name'] ?? '') ?></td>
-                    <td class="px-8 py-4 text-secondary"><?= $e($user['room_no'] ?? '') ?></td>
-                    <td class="px-8 py-4 font-mono text-sm"><?= $e($user['ext'] ?? '') ?></td>
-                    <td class="px-8 py-4 text-right space-x-4">
-                        <a href="<?= defined('BASE_URL') ? BASE_URL . '/admin/users/edit?id=' . $userId : '/admin/users/edit?id=' . $userId ?>"
-                            class="text-primary hover:underline font-bold text-sm">edit</a>
-                        <form method="post" action="<?= defined('BASE_URL') ? BASE_URL . '/admin/users/delete' : '/admin/users/delete' ?>" class="inline">
-                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars((string)csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
-                            <input type="hidden" name="id" value="<?= $userId ?>">
-                            <button type="submit" class="text-error hover:underline font-bold text-sm"
-                                onclick="return confirm('Delete this user?')">delete</button>
-                        </form>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-                <?php endif; ?>
-            </tbody>
-        </table>
-        <!-- Pagination Controls -->
-        <div class="px-8 py-6 flex items-center justify-between bg-surface-container-high/20">
-            <div class="text-sm text-on-surface-variant font-medium">
-                Showing <span class="text-primary font-bold"><?= count($users) ?></span> users
-            </div>
+    <!-- Users Table -->
+    <div class="bg-surface-container-lowest rounded-lg border border-outline-variant/20 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-surface-container">
+                    <tr>
+                        <th class="px-6 py-3 text-xs font-semibold text-on-surface-variant uppercase tracking-wide">Image</th>
+                        <th class="px-6 py-3 text-xs font-semibold text-on-surface-variant uppercase tracking-wide">Name</th>
+                        <th class="px-6 py-3 text-xs font-semibold text-on-surface-variant uppercase tracking-wide">Room</th>
+                        <th class="px-6 py-3 text-xs font-semibold text-on-surface-variant uppercase tracking-wide">Ext.</th>
+                        <th class="px-6 py-3 text-xs font-semibold text-on-surface-variant uppercase tracking-wide text-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-outline-variant/15">
+                    <?php if ($users === []): ?>
+                    <tr>
+                        <td colspan="5" class="py-12 px-6">
+                            <div class="empty-state">
+                                <span class="material-symbols-outlined empty-state-icon">group_off</span>
+                                <p class="empty-state-text">No users found. Start by adding one.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php else: ?>
+                    <?php foreach ($users as $user): ?>
+                    <?php $userId = (int)($user['id'] ?? 0); ?>
+                    <tr class="hover:bg-surface-container-low transition-colors duration-150">
+                        <td class="px-6 py-4">
+                            <?php if (!empty($user['profile_pic'])): ?>
+                            <img class="w-9 h-9 rounded-full object-cover" loading="lazy" src="<?= (strpos($user['profile_pic'] ?? '', 'http') === 0) ? $user['profile_pic'] : '/uploads/' . $user['profile_pic'] ?>" alt="<?= $e($user['name'] ?? '') ?>">
+                            <?php else: ?>
+                            <img class="w-9 h-9 rounded-full object-cover" loading="lazy"
+                                src="https://ui-avatars.com/api/?name=<?= urlencode($user['name'] ?? 'U') ?>&background=e3e2df&color=33210d&size=72"
+                                alt="<?= $e($user['name'] ?? '') ?>">
+                            <?php endif; ?>
+                        </td>
+                        <td class="px-6 py-4 text-sm font-medium text-on-surface"><?= $e($user['name'] ?? '') ?></td>
+                        <td class="px-6 py-4 text-sm text-on-surface-variant"><?= $e($user['room_no'] ?? '') ?></td>
+                        <td class="px-6 py-4 text-sm text-on-surface-variant"><?= $e($user['ext'] ?? '') ?></td>
+                        <td class="px-6 py-4 text-right">
+                            <div class="flex justify-end gap-1">
+                                <a href="<?= defined('BASE_URL') ? BASE_URL . '/admin/users/edit?id=' . $userId : '/admin/users/edit?id=' . $userId ?>"
+                                    class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-primary transition-all duration-150"
+                                    aria-label="Edit <?= $e($user['name'] ?? '') ?>"
+                                    title="Edit">
+                                    <span class="material-symbols-outlined text-[20px]">edit</span>
+                                </a>
+                                <form method="post" action="<?= defined('BASE_URL') ? BASE_URL . '/admin/users/delete' : '/admin/users/delete' ?>" class="inline">
+                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars((string)csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
+                                    <input type="hidden" name="id" value="<?= $userId ?>">
+                                    <button type="button"
+                                        class="inline-flex items-center justify-center w-9 h-9 rounded-lg text-error/70 hover:bg-error-container/30 hover:text-error transition-all duration-150"
+                                        aria-label="Delete <?= $e($user['name'] ?? '') ?>"
+                                        title="Delete"
+                                        onclick="if(confirm('Delete this user?')) this.closest('form').submit();">
+                                        <span class="material-symbols-outlined text-[20px]">delete</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+        <footer class="px-6 py-4 bg-surface-container flex items-center justify-between">
+            <p class="text-sm text-on-surface-variant">
+                Showing <span class="font-semibold text-on-surface"><?= count($users) ?></span> users
+            </p>
             <?php
             $currentPage = (int) ($_GET['page'] ?? 1);
             $basePath = defined('BASE_URL') ? BASE_URL . '/admin/users' : '/admin/users';
             require __DIR__ . '/../../partials/pagination.php';
             ?>
-        </div>
+        </footer>
     </div>
-</main>
+</div>
 <?php
 $content = ob_get_clean();
 $pageTitle = 'Manage users';
