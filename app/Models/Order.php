@@ -78,7 +78,7 @@ class Order
 
     public function getSpendingSummary(?string $dateFrom, ?string $dateTo, ?int $userId = null): array
     {
-        $sql = "SELECT u.id, u.name, SUM(o.total_amount) as total_spent
+        $sql = "SELECT u.id, u.name, u.profile_pic, SUM(o.total_amount) as total_spent
                 FROM users u
                 JOIN orders o ON u.id = o.user_id
                 WHERE o.status != 'Cancelled'";
@@ -99,7 +99,7 @@ class Order
             $params['user_id'] = $userId;
         }
 
-        $sql .= " GROUP BY u.id, u.name ORDER BY total_spent DESC";
+        $sql .= " GROUP BY u.id, u.name, u.profile_pic ORDER BY total_spent DESC";
 
         $stmt = $this->connection->prepare($sql);
         $stmt->execute($params);
