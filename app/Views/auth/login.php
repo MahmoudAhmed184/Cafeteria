@@ -1,58 +1,54 @@
-<?php $page_title = 'Login';
+<?php /* Frontend Polish Pass: updated labels to Title Case and focus rings to brand colors */
+$page_title = 'Login';
 ob_start(); ?>
-<main class="w-full max-w-[420px] flex flex-col items-center">
-    <!-- Brand Header Section -->
-    <header class="mb-12 text-center">
-        <div class="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-xl bg-surface-container-highest">
-            <span class="material-symbols-outlined text-primary text-3xl"
-                data-icon="restaurant_menu">restaurant_menu</span>
+<main class="w-full max-w-[400px] flex flex-col items-center px-4">
+    <!-- Brand -->
+    <header class="mb-10 text-center">
+        <div class="mb-4 inline-flex items-center justify-center w-14 h-14 rounded-xl bg-surface-container-highest">
+            <span class="material-symbols-outlined text-primary text-2xl">restaurant_menu</span>
         </div>
-        <h1 class="font-headline font-extrabold text-4xl tracking-tight text-primary mb-2">Cafeteria</h1>
-        <p class="font-body text-secondary text-sm tracking-wide opacity-80 uppercase font-semibold">Cafeteria</p>
+        <h1 class="font-headline font-bold text-2xl text-primary">Cafeteria</h1>
+        <p class="font-body text-on-surface-variant text-sm mt-1">Sign in to your account</p>
     </header>
-    <!-- Form Section -->
-    <section class="w-full bg-surface-container-lowest editorial-shadow rounded-xl p-8 md:p-10">
-        <form method="POST" class="space-y-6">
+    <!-- Form -->
+    <section class="w-full bg-surface-container-lowest editorial-shadow rounded-xl p-6 sm:p-8">
+        <?php if (isset($_SESSION['error'])): ?>
+        <div class="mb-4 p-3 bg-error-container/30 rounded-lg text-sm text-error font-medium">
+            <?= htmlspecialchars($_SESSION['error'], ENT_QUOTES, 'UTF-8')?>
+        </div>
+        <?php
+endif; ?>
+        <form method="POST" class="auth-form space-y-5" novalidate>
             <input type="hidden" name="csrf_token" value="<?= csrf_token()?>">
-            <!-- Email Input Group -->
-            <div class="space-y-2">
-                <label class="block font-label text-sm font-semibold text-on-surface-variant" for="email">Email</label>
-                <div class="relative">
-                    <input
-                        class="w-full bg-surface-container-low border-none rounded-lg py-3.5 px-4 text-on-surface font-body text-base focus:ring-2 focus:ring-primary/10 focus:bg-surface-container-lowest transition-all duration-200 outline-none placeholder:text-outline/50"
-                        id="email" name="email" placeholder="username@corporate.com" type="email" />
-                </div>
+            <div class="space-y-1.5">
+                <label class="block text-sm font-medium text-on-surface"
+                    for="email">Email</label>
+                <input
+                    class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg py-2.5 px-3.5 text-sm text-on-surface font-body focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all duration-150"
+                    id="email" name="email" placeholder="username@corporate.com" type="email" required />
             </div>
-            <!-- Password Input Group -->
-            <div class="space-y-2">
-                <div class="flex justify-between items-center">
-                    <label class="block font-label text-sm font-semibold text-on-surface-variant"
-                        for="password">Password</label>
-                </div>
-                <div class="relative">
-                    <input
-                        class="w-full bg-surface-container-low border-none rounded-lg py-3.5 px-4 text-on-surface font-body text-base focus:ring-2 focus:ring-primary/10 focus:bg-surface-container-lowest transition-all duration-200 outline-none placeholder:text-outline/50"
-                        id="password" name="password" placeholder="••••••••" type="password" />
-                </div>
+            <div class="space-y-1.5">
+                <label class="block text-sm font-medium text-on-surface"
+                    for="password">Password</label>
+                <input
+                    class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg py-2.5 px-3.5 text-sm text-on-surface font-body focus:ring-2 focus:ring-primary/20 focus:border-primary focus:outline-none transition-all duration-150"
+                    id="password" name="password" placeholder="••••••••" type="password" required />
             </div>
-            <!-- CTA Button -->
             <button
-                class="w-full primary-gradient text-on-primary font-headline font-bold py-4 rounded-lg shadow-md hover:opacity-90 active:scale-[0.98] transition-all duration-200 text-lg"
+                class="w-full bg-primary text-on-primary font-body font-semibold py-2.5 rounded-lg hover:bg-primary-container active:scale-[0.99] transition-all duration-150 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
                 type="submit">
                 Login
             </button>
         </form>
-        <!-- Secondary Actions -->
-        <div class="mt-8 text-center">
-            <a class="font-label text-sm font-semibold text-secondary hover:text-primary transition-colors duration-200"
-                href="#">
-                Forget Password?
+        <div class="mt-6 text-center">
+            <a class="text-sm font-medium text-secondary hover:text-primary transition-colors duration-150"
+                href="<?= htmlspecialchars(defined('BASE_URL') ? rtrim(BASE_URL, '/') . '/forget-password' : '/forget-password')?>">
+                Forgot password?
             </a>
         </div>
     </section>
-    <!-- Footer Information -->
     <footer class="mt-8 text-center">
-        <p class="text-xs text-outline/50 font-body">©
+        <p class="text-xs text-outline/50">©
             <?= date('Y')?> Cafeteria. All rights reserved.
         </p>
     </footer>
