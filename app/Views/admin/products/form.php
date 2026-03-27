@@ -133,8 +133,7 @@ ob_start();
 </div>
 
 <!-- Add Category Modal -->
-<div id="add-category-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="add-category-title"
-    hidden class="fixed inset-0 bg-black/30 flex items-center justify-center z-[100]">
+<div id="add-category-modal" class="modal-backdrop fixed inset-0 bg-black/30 flex items-center justify-center z-[100]" role="dialog" aria-modal="true" aria-labelledby="add-category-title" hidden>
     <div class="bg-white rounded-lg p-6 max-w-sm w-full mx-4 border border-outline-variant/20">
         <h2 id="add-category-title" class="text-lg font-semibold text-primary mb-4">Add Category</h2>
         <form id="add-category-form">
